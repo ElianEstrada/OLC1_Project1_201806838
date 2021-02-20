@@ -6,6 +6,8 @@
 package com.elian_estrada.gui;
 
 import java.awt.Color;
+import java.awt.LayoutManager;
+import java.awt.Point;
 
 /**
  *
@@ -16,6 +18,9 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
+    
+    private boolean flagConsole;
+    
     public Home() {
         initComponents();
         this.jScrollPane1.getVerticalScrollBar().setOpaque(true);
@@ -23,7 +28,11 @@ public class Home extends javax.swing.JFrame {
         this.jScrollPane1.getVerticalScrollBar().setBorder(null);
         this.jScrollPane1.getVerticalScrollBar().setFocusable(false);
         this.jScrollPane1.getVerticalScrollBar().removeAll();
-        
+        this.jScrollPane2.setVisible(false);
+        this.setSize(1150, this.getSize().height - this.jScrollPane2.getSize().height);
+        this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 26 ));
+        this.flagConsole = false;
+        this.txtConsole.setText("Hola que hace");
     }
 
     /**
@@ -36,8 +45,6 @@ public class Home extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        pnInfo = new javax.swing.JPanel();
-        lblOutput = new javax.swing.JLabel();
         lblExit = new javax.swing.JLabel();
         pnMenu = new javax.swing.JPanel();
         lblOpenFile = new javax.swing.JLabel();
@@ -47,35 +54,20 @@ public class Home extends javax.swing.JFrame {
         pnTextArea = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSource = new javax.swing.JTextArea();
+        pnInfo = new javax.swing.JPanel();
+        lblOutput = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtConsole = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(32, 32, 32));
         setUndecorated(true);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel1.setBackground(new java.awt.Color(32, 32, 32));
         jPanel1.setAutoscrolls(true);
         jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        pnInfo.setBackground(new java.awt.Color(0, 122, 204));
-        pnInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        lblOutput.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        lblOutput.setForeground(new java.awt.Color(255, 255, 255));
-        lblOutput.setText("Output");
-        lblOutput.setToolTipText("");
-        lblOutput.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                lblOutputMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                lblOutputMouseExited(evt);
-            }
-        });
-        pnInfo.add(lblOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 5, -1, -1));
-        lblOutput.getAccessibleContext().setAccessibleName("lblOutput");
-
-        jPanel1.add(pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 25));
 
         lblExit.setBackground(new java.awt.Color(32, 32, 32));
         lblExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/elian_estrada/images/icons8_Multiply_32px.png"))); // NOI18N
@@ -170,6 +162,7 @@ public class Home extends javax.swing.JFrame {
         txtSource.setLineWrap(true);
         txtSource.setRows(5);
         txtSource.setTabSize(4);
+        txtSource.setWrapStyleWord(true);
         txtSource.setBorder(null);
         txtSource.setCaretColor(new java.awt.Color(255, 255, 255));
         jScrollPane1.setViewportView(txtSource);
@@ -178,18 +171,46 @@ public class Home extends javax.swing.JFrame {
 
         jPanel1.add(pnTextArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 450, 690));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, -1));
+
+        pnInfo.setBackground(new java.awt.Color(0, 122, 204));
+        pnInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblOutput.setFont(new java.awt.Font("Dialog", 1, 13)); // NOI18N
+        lblOutput.setForeground(new java.awt.Color(255, 255, 255));
+        lblOutput.setText("Output");
+        lblOutput.setToolTipText("");
+        lblOutput.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblOutput.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblOutputMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblOutputMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblOutputMouseExited(evt);
+            }
+        });
+        pnInfo.add(lblOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 5, -1, -1));
+        lblOutput.getAccessibleContext().setAccessibleName("lblOutput");
+
+        getContentPane().add(pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, 1150, 25));
+
+        jScrollPane2.setBorder(null);
+
+        txtConsole.setEditable(false);
+        txtConsole.setBackground(new java.awt.Color(32, 32, 32));
+        txtConsole.setColumns(20);
+        txtConsole.setForeground(new java.awt.Color(255, 255, 255));
+        txtConsole.setLineWrap(true);
+        txtConsole.setRows(5);
+        txtConsole.setWrapStyleWord(true);
+        txtConsole.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Console", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        txtConsole.setCaretColor(new java.awt.Color(255, 255, 255));
+        jScrollPane2.setViewportView(txtConsole);
+
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 281));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -248,11 +269,28 @@ public class Home extends javax.swing.JFrame {
         this.lblOutput.setOpaque(false);
     }//GEN-LAST:event_lblOutputMouseExited
 
+    private void lblOutputMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOutputMouseClicked
+        if(!this.flagConsole){
+            this.setSize(1150, this.getSize().height + this.jScrollPane2.getSize().height);
+            this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, 1150, 26 ));
+            this.setLocation(this.getLocation().x, this.getLocation().y - 150);
+            this.jScrollPane2.setVisible(true);
+            this.flagConsole = true;
+        }else{
+            this.setSize(1150, this.getSize().height - this.jScrollPane2.getSize().height);
+            this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 26 ));
+            this.setLocation(this.getLocation().x, this.getLocation().y + 150);
+            this.jScrollPane2.setVisible(false);
+            this.flagConsole = false;
+        }
+    }//GEN-LAST:event_lblOutputMouseClicked
+
    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblExit;
     private javax.swing.JLabel lblNewFile;
     private javax.swing.JLabel lblOpenFile;
@@ -262,6 +300,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel pnInfo;
     private javax.swing.JPanel pnMenu;
     private javax.swing.JPanel pnTextArea;
+    private javax.swing.JTextArea txtConsole;
     private javax.swing.JTextArea txtSource;
     // End of variables declaration//GEN-END:variables
 }
