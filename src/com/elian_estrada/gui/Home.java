@@ -120,6 +120,9 @@ public class Home extends javax.swing.JFrame {
         lblOpenFile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblOpenFile.setOpaque(true);
         lblOpenFile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblOpenFileMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblOpenFileMouseEntered(evt);
             }
@@ -134,6 +137,9 @@ public class Home extends javax.swing.JFrame {
         lblNewFile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblNewFile.setOpaque(true);
         lblNewFile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblNewFileMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblNewFileMouseEntered(evt);
             }
@@ -261,6 +267,7 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblExitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExitMouseClicked
+        this.menu.newFile(this.txtSource.getText());
         System.exit(0);
     }//GEN-LAST:event_lblExitMouseClicked
 
@@ -341,6 +348,8 @@ public class Home extends javax.swing.JFrame {
     private void txtSourceChanged(javax.swing.event.DocumentEvent evt){
         if(menu.getFlagEdit() && menu.getFilePath() != ""){
             this.lblTitle.setText("*" + this.nameFile);
+        }else if(menu.getFilePath() != ""){
+            this.lblTitle.setText("*" + this.nameFile);
             menu.setFlagEdit(true);
         }else{
             menu.setFlagEdit(true);
@@ -353,12 +362,39 @@ public class Home extends javax.swing.JFrame {
 
     private void lblSaveFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSaveFileMouseClicked
         String name = this.menu.saveFile(this.txtSource.getText());
-        if(this.nameFile == ""){
+        if(this.nameFile == "" && name != ""){
             this.nameFile = name;
+            this.lblTitle.setText(nameFile);
+        }else if(this.nameFile != ""){
+            this.lblTitle.setText(this.nameFile);
         }
         
-        this.lblTitle.setText(nameFile);
     }//GEN-LAST:event_lblSaveFileMouseClicked
+
+    private void lblNewFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNewFileMouseClicked
+        this.menu.newFile(txtSource.getText());
+        this.lblTitle.setText("Untitle.olc");
+        this.txtSource.setText("");
+        this.menu.setFlagEdit(false);
+        this.nameFile = "";
+    }//GEN-LAST:event_lblNewFileMouseClicked
+
+    private void lblOpenFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOpenFileMouseClicked
+        String content = null;
+        
+        try{
+            content = this.menu.openFile(this.txtSource.getText()).toString();
+        }catch(Exception e){
+            content = null;
+        }
+        
+        if(content != null){
+            this.txtSource.setText(content);
+            this.nameFile = this.menu.getFilePath().split("/")[this.menu.getFilePath().split("/").length - 1];
+            this.lblTitle.setText(this.nameFile);
+            this.menu.setFlagEdit(false);
+        }
+    }//GEN-LAST:event_lblOpenFileMouseClicked
 
    
     
