@@ -5,9 +5,14 @@
  */
 package com.elian_estrada.gui;
 
+
+import com.elian_estrada.controllers.Menu;
 import java.awt.Color;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import javax.swing.JOptionPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -20,9 +25,27 @@ public class Home extends javax.swing.JFrame {
      */
     
     private boolean flagConsole;
+    private String nameFile;
+    private Menu menu;
     
     public Home() {
         initComponents();
+        this.txtSource.getDocument().addDocumentListener(new DocumentListener (){
+            @Override
+            public void removeUpdate(DocumentEvent e){
+                Home.this.txtSourceChanged(e);
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent e){
+                Home.this.txtSourceChanged(e);
+            }
+            
+            @Override
+            public void changedUpdate(DocumentEvent arg0){
+                Home.this.txtSourceChanged(arg0);
+            }
+        });
         this.jScrollPane1.getVerticalScrollBar().setOpaque(true);
         this.jScrollPane1.getVerticalScrollBar().setBackground(new Color(32,32,32));
         this.jScrollPane1.getVerticalScrollBar().setBorder(null);
@@ -32,7 +55,9 @@ public class Home extends javax.swing.JFrame {
         this.setSize(1150, this.getSize().height - this.jScrollPane2.getSize().height);
         this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 26 ));
         this.flagConsole = false;
-        this.txtConsole.setText("Hola que hace");
+        this.nameFile = "";
+        this.lblTitle.setText("Untitle.olc");
+        this.menu = new Menu();
     }
 
     /**
@@ -54,6 +79,7 @@ public class Home extends javax.swing.JFrame {
         pnTextArea = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSource = new javax.swing.JTextArea();
+        lblTitle = new javax.swing.JLabel();
         pnInfo = new javax.swing.JPanel();
         lblOutput = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -122,6 +148,9 @@ public class Home extends javax.swing.JFrame {
         lblSaveFile.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblSaveFile.setOpaque(true);
         lblSaveFile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblSaveFileMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblSaveFileMouseEntered(evt);
             }
@@ -136,6 +165,9 @@ public class Home extends javax.swing.JFrame {
         lblSaveFileAs.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblSaveFileAs.setOpaque(true);
         lblSaveFileAs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblSaveFileAsMouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lblSaveFileAsMouseEntered(evt);
             }
@@ -150,7 +182,7 @@ public class Home extends javax.swing.JFrame {
         pnTextArea.setBackground(new java.awt.Color(32, 32, 32));
         pnTextArea.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jScrollPane1.setBorder(null);
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(102, 102, 102)));
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setHorizontalScrollBar(null);
         jScrollPane1.setRowHeaderView(null);
@@ -165,9 +197,22 @@ public class Home extends javax.swing.JFrame {
         txtSource.setWrapStyleWord(true);
         txtSource.setBorder(null);
         txtSource.setCaretColor(new java.awt.Color(255, 255, 255));
+        txtSource.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                txtSourceInputMethodTextChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtSource);
 
         pnTextArea.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 49, 450, 640));
+
+        lblTitle.setBackground(new java.awt.Color(58, 59, 60));
+        lblTitle.setFont(new java.awt.Font("UKIJ Teng", 1, 15)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(190, 190, 190));
+        lblTitle.setOpaque(true);
+        pnTextArea.add(lblTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 28, -1, -1));
 
         jPanel1.add(pnTextArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 450, 690));
 
@@ -285,6 +330,36 @@ public class Home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lblOutputMouseClicked
 
+    private void lblSaveFileAsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSaveFileAsMouseClicked
+        this.nameFile = this.menu.saveAsFile(this.txtSource.getText());
+        
+        if (nameFile != ""){
+            this.lblTitle.setText(nameFile);
+        }
+    }//GEN-LAST:event_lblSaveFileAsMouseClicked
+
+    private void txtSourceChanged(javax.swing.event.DocumentEvent evt){
+        if(menu.getFlagEdit() && menu.getFilePath() != ""){
+            this.lblTitle.setText("*" + this.nameFile);
+            menu.setFlagEdit(true);
+        }else{
+            menu.setFlagEdit(true);
+        }
+    }
+    
+    private void txtSourceInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtSourceInputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSourceInputMethodTextChanged
+
+    private void lblSaveFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSaveFileMouseClicked
+        String name = this.menu.saveFile(this.txtSource.getText());
+        if(this.nameFile == ""){
+            this.nameFile = name;
+        }
+        
+        this.lblTitle.setText(nameFile);
+    }//GEN-LAST:event_lblSaveFileMouseClicked
+
    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -297,6 +372,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel lblOutput;
     private javax.swing.JLabel lblSaveFile;
     private javax.swing.JLabel lblSaveFileAs;
+    private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel pnInfo;
     private javax.swing.JPanel pnMenu;
     private javax.swing.JPanel pnTextArea;
