@@ -6,3 +6,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+jflex-1.8.2/
+cup/
+*.tar.gz

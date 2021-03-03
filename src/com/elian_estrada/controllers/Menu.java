@@ -63,7 +63,7 @@ public class Menu {
                 String line = read.readLine();
                 
                 while(line != null){
-                    content.append(line);
+                    content.append(line+"\n");
                     line = read.readLine();
                 }
                 

@@ -1,0 +1,124 @@
+/*
+ * Ejemplo Parser
+ * Elian Estrada
+ * Febrero 2021
+ */
+
+
+package com.elian_estrada.analyzers;
+import java_cup.runtime.*;
+
+parser code
+{: 
+    /*Metodo para errores sintacticos*/
+    public void syntax_error(Symbol s){
+        
+        System.out.println("Error sintactico en la linea: " + (s.left) + 
+        " columna: " + s.right + ". No se esperaba este componente: " + s.value + 
+        ".");
+    }
+
+    /*Metodo para errores fatales*/
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
+
+        System.out.println("Error sintactico irrecuperable en la linea: " + 
+        (s.left) + " columna: " + s.right + ". Componente: " + s.value + 
+        " no reconocido.");
+    }
+
+:}
+
+terminal String PTCOMA, COMA,DOSPUN,PARIZQ,PARDER, LLAVIZQ, LLAVDER, ASIG, RANG, PORCENT;
+terminal String KLEAN,POS,CONCAT,DISYN, BOOL;
+terminal String ENTERO;
+terminal String DIGIT;
+terminal String DECIMAL;
+terminal String UMENOS;
+terminal String CONJ;
+terminal String CADENA_TEXTO;
+terminal String IDENTIFICADOR;
+terminal String LETTER;
+terminal String NLINE, COMILLA, COMDOBLE;
+terminal String SIMBOLS;
+
+non terminal Init;
+non terminal Statement;
+non terminal Validation;
+non terminal StatementInstrucctions;
+non terminal Set;
+non terminal SetType;
+non terminal SetTypeP;
+non terminal Signs;
+non terminal ListSet;
+non terminal RegularPhrase;
+non terminal ValidationInstrucctions;
+
+
+start with Init;
+
+Init ::= LLAVIZQ Statement PORCENT PORCENT Validation LLAVDER;
+
+Statement ::= 
+     StatementInstrucctions Statement
+    |StatementInstrucctions
+    |error Statement
+;
+
+StatementInstrucctions ::= 
+     Set:a                                                                      {:System.out.println(a);:}
+    |RegularPhrase
+;
+
+Set ::= 
+     CONJ:a DOSPUN IDENTIFICADOR:b ASIG SetType:d PTCOMA                        {:System.out.println(a + ": " + b + "-> " + d + ";"); RESULT = a;:}
+    /*|error Set                                                                  {::}*/
+;
+
+SetType ::= 
+     Signs:a SetTypeP:b                                                         {:RESULT = a.toString() + b.toString();:} 
+;
+
+Signs ::= 
+     SIMBOLS:a                                                                  {:RESULT = a;:}
+    |LETTER:a                                                                   {:RESULT = a;:}
+    |DIGIT:a                                                                    {:RESULT = a;:}
+;
+
+SetTypeP ::= 
+     RANG Signs:a                                                               {:RESULT = "~" + a;:}
+    |ListSet:a                                                                  {:RESULT = a;:}
+;
+
+ListSet ::= 
+     COMA Signs:a ListSet:b                                                     {:RESULT = ", " + a + b;:}
+    |/*Eps*/                                                                    {:RESULT = "";:}        
+;
+
+RegularPhrase ::= 
+     IDENTIFICADOR ASIG PTCOMA                                                  {::}
+    /*|error RegularPhrase                                                        {::}*/
+;
+
+Validation ::= 
+     ValidationInstrucctions Validation
+    |ValidationInstrucctions
+    |error Validation
+;
+
+ValidationInstrucctions ::= 
+     IDENTIFICADOR DOSPUN CADENA_TEXTO PTCOMA
+;
+
+/*
+instruccion ::=
+    CORIZQ expresion:a CORDER PTCOMA {: System.out.println("El valor de la expresion es: " + a);:}
+;
+
+expresion ::= 
+    ENTERO:a POS ENTERO:b                                       {:RESULT= a+b;:}
+   |DECIMAL:a                                       {:RESULT= a;:}
+   |PARIZQ expresion:a PARDER                       {:RESULT= a;:}
+   |CADENA_TEXTO:a                                  {:RESULT= a; System.out.println(a);:}
+   |SIMBOLS:a    RANG COMDOBLE                      {:RESULT= a; System.out.println(a);:}
+;*/

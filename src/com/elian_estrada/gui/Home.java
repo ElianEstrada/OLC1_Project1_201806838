@@ -7,9 +7,17 @@ package com.elian_estrada.gui;
 
 
 import com.elian_estrada.controllers.Menu;
+import com.elian_estrada.analyzers.*;
 import java.awt.Color;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -27,6 +35,7 @@ public class Home extends javax.swing.JFrame {
     private boolean flagConsole;
     private String nameFile;
     private Menu menu;
+    private Parser parser;
     
     public Home() {
         initComponents();
@@ -76,6 +85,7 @@ public class Home extends javax.swing.JFrame {
         lblNewFile = new javax.swing.JLabel();
         lblSaveFile = new javax.swing.JLabel();
         lblSaveFileAs = new javax.swing.JLabel();
+        lblExecute = new javax.swing.JLabel();
         pnTextArea = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSource = new javax.swing.JTextArea();
@@ -182,6 +192,14 @@ public class Home extends javax.swing.JFrame {
             }
         });
         pnMenu.add(lblSaveFileAs, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 40, 50));
+
+        lblExecute.setText("Play");
+        lblExecute.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblExecuteMouseClicked(evt);
+            }
+        });
+        pnMenu.add(lblExecute, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, -1, -1));
 
         jPanel1.add(pnMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 60, 690));
 
@@ -396,12 +414,30 @@ public class Home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lblOpenFileMouseClicked
 
+    private void lblExecuteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExecuteMouseClicked
+        try{
+            
+            this.lblSaveFileMouseClicked(evt);
+            this.menu.setFlagEdit(false);
+            
+            BufferedReader buffer = new BufferedReader(new FileReader(this.menu.getFilePath()));
+            
+            parser = new Parser(new Scanner(buffer));
+            
+            parser.parse();
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Que pex :'v" + e);
+        }
+    }//GEN-LAST:event_lblExecuteMouseClicked
+
    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblExecute;
     private javax.swing.JLabel lblExit;
     private javax.swing.JLabel lblNewFile;
     private javax.swing.JLabel lblOpenFile;
