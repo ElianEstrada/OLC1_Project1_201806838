@@ -38,8 +38,8 @@ ID = {L}({L}|{D})*
 LineTerminator = \r|\n|\r\n
 WhiteSpace = [ \r\t]+
 Comment = {CommentInLine}|{CommentMultiLine}
+Arrow = "-"{WhiteSpace}">"|"->"
 Simbols = [!#-&(-/:-@\[\]-`{-}]
-
 CommentInLine = "//" [^\r\n]* {LineTerminator}?
 CommentMultiLine = "<!" [^*] ~"!>"|"<!" "!"+ ">"
 
@@ -62,11 +62,10 @@ CommentMultiLine = "<!" [^*] ~"!>"|"<!" "!"+ ">"
 "{" {return symbol(sym.LLAVIZQ);}
 "}" {return symbol(sym.LLAVDER);}
 ":" {return symbol(sym.DOSPUN);}
-"->" {return symbol(sym.ASIG);}
 "~" {return symbol(sym.RANG);}
-"\\n" {return symbol(sym.NLINE);}
-"\\\'" {return symbol(sym.COMILLA);}
-"\\\"" {return symbol(sym.COMDOBLE);}
+"\\n" {System.out.println(yytext()); return symbol(sym.NLINE, yytext());}
+"\\\'" {System.out.println(yytext()); return symbol(sym.COMILLA, yytext());}
+"\\\"" {System.out.println(yytext()); return symbol(sym.COMDOBLE, yytext());}
 
 \" {yybegin(STRING); string.setLength(0);}
 
@@ -81,6 +80,7 @@ CommentMultiLine = "<!" [^*] ~"!>"|"<!" "!"+ ">"
 {Digit} {return symbol(sym.ENTERO, yytext());}
 {DD} {return symbol(sym.DECIMAL);}
 {ID} {return symbol(sym.IDENTIFICADOR, yytext());}
+{Arrow} {return symbol(sym.ASIG, yytext());}
 
 }
 
