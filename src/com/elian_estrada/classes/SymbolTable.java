@@ -36,7 +36,7 @@ public class SymbolTable {
         }
     }
 
-    public SymbolTable(){
+    public SymbolTable(String name, Expression expression){
         
     }
     

@@ -16,7 +16,7 @@ action code
 
     public Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
     public Hashtable<Integer, ArrayList<NodeTree>> leaves = new Hashtable<Integer, ArrayList<NodeTree>>();
-    //public Tree tree = new Tree();
+    //public Tree tree;
     public int count = 0;
 
 :};
@@ -83,7 +83,7 @@ Statement ::=
 
 StatementInstrucctions ::= 
      Set:a                                                                      {:System.out.println(symbolTable);:}
-    |RegularPhrase:a                                                            {:count = 0; System.out.println(a.chart());:}  
+    |RegularPhrase:a                                                            {:count = 0; a.followTable(leaves); System.out.println(a.chart()); leaves.clear();:}  
 ;
 
 Set ::= 
@@ -113,17 +113,17 @@ ListSet ::=
 ;
 
 RegularPhrase ::= 
-     IDENTIFICADOR ASIG Expression:a PTCOMA                                     {: count++; 
-                                                                                RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves)));:}
+     IDENTIFICADOR:b ASIG Expression:a PTCOMA                                   {: count++; 
+                                                                                RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b);:}
     /*|error RegularPhrase                                                        {::}*/
 ;
 
 Expression ::=
-     CONCAT Expression:a Expression:b                                           {:RESULT = new NodeTree(".", a, b);:}
-    |DISYN Expression:a Expression:b                                            {:RESULT = new NodeTree("|", a, b);:}
-    |POS Expression:a                                                           {:RESULT = new NodeTree("+", a, null);:}
-    |KLEAN Expression:a                                                         {:RESULT = new NodeTree("*", a, null);:}
-    |BOOL Expression:a                                                          {:RESULT = new NodeTree("?", a, null);:}
+     CONCAT Expression:a Expression:b                                           {:RESULT = new NodeTree(".", a, b, leaves);:}
+    |DISYN Expression:a Expression:b                                            {:RESULT = new NodeTree("|", a, b, leaves);:}
+    |POS Expression:a                                                           {:RESULT = new NodeTree("+", a, null, leaves);:}
+    |KLEAN Expression:a                                                         {:RESULT = new NodeTree("*", a, null, leaves);:}
+    |BOOL Expression:a                                                          {:RESULT = new NodeTree("?", a, null, leaves);:}
     |LLAVIZQ IDENTIFICADOR:a LLAVDER                                            {: count++; RESULT = new NodeTree(a, count, leaves);:}
     |CADENA_TEXTO:a                                                             {: count++; RESULT = new NodeTree(a, count, leaves);:}
     |NLINE:a                                                                    {: count++; RESULT = new NodeTree(a, count, leaves);:}

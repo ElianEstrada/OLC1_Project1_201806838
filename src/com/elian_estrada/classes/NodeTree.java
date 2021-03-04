@@ -24,14 +24,14 @@ public class NodeTree {
     private boolean voidable;
     
     
-    public NodeTree(String name, NodeTree left, NodeTree right){
+    public NodeTree(String name, NodeTree left, NodeTree right, Hashtable<Integer, ArrayList<NodeTree>> leaves){
         this.setName(name);
         this.setLeft(left);
         this.setRight(right);
         this.setId(0);
         this.setFirst(new ArrayList<NodeTree>());
         this.setLast(new ArrayList<NodeTree>());
-        this.calculations(name);
+        this.calculations(name, leaves);
     }
 
     public NodeTree(String name, int id, Hashtable<Integer, ArrayList<NodeTree>> leaves){
@@ -49,12 +49,13 @@ public class NodeTree {
     }
     
     
-    private void calculations(String name){
+    private void calculations(String name, Hashtable<Integer, ArrayList<NodeTree>> leaves){
         switch(name){
             case "*":
                 this.setVoidable(true);
                 this.setFirst(this.left.getFirst());
                 this.setLast(this.left.getLast());
+                calculateFollows(name, this.getLeft(), this.getRight(), leaves);
                 break;
             case "+":
                 if(left.isVoidable()){
@@ -64,6 +65,7 @@ public class NodeTree {
                 }
                 this.setFirst(this.left.getFirst());
                 this.setLast(this.left.getLast());
+                calculateFollows(name, this.getLeft(), this.getRight(), leaves);
                 break;
             case "?":
                 this.setVoidable(true);
@@ -73,8 +75,12 @@ public class NodeTree {
             case ".":
                 if (left.isVoidable() && right.isVoidable()) {
                     this.setVoidable(true);
+                }else if(left.isVoidable()){
                     this.getFirst().addAll(this.left.getFirst());
                     this.getFirst().addAll(this.right.getFirst());
+                    this.setLast(this.right.getLast());
+                }else if (right.isVoidable()){
+                    this.setFirst(left.getFirst());
                     this.getLast().addAll(this.left.getLast());
                     this.getLast().addAll(this.right.getLast());
                 }else{
@@ -82,6 +88,7 @@ public class NodeTree {
                     this.setFirst(left.getFirst());
                     this.setLast(this.right.getLast());
                 }
+                calculateFollows(name, this.getLeft(), this.getRight(), leaves);
                 break;
             case "|":
                 if(left.isVoidable() || right.isVoidable()){
@@ -97,6 +104,21 @@ public class NodeTree {
         }
     }
     
+    public void calculateFollows(String name, NodeTree left, NodeTree right, Hashtable<Integer, ArrayList<NodeTree>> leaves){
+        switch(name){
+            case ".":
+                for(NodeTree las: left.getLast()){
+                    leaves.get(las.getId()).addAll(right.getFirst());
+                }
+                break;
+            case "+":
+            case "*":
+                for(NodeTree las: left.getLast()){
+                    leaves.get(las.getId()).addAll(left.getFirst());
+                }
+                break;
+        }
+    }
     
     public NodeTree getLeft() {
         return left;
@@ -182,6 +204,11 @@ public class NodeTree {
 
     public void setVoidable(boolean voidable) {
         this.voidable = voidable;
+    }
+
+    @Override
+    public String toString() {
+        return "" + id;
     }
 
     

@@ -209,7 +209,7 @@ class CUP$Parser$actions {
 
     public Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
     public Hashtable<Integer, ArrayList<NodeTree>> leaves = new Hashtable<Integer, ArrayList<NodeTree>>();
-    //public Tree tree = new Tree();
+    //public Tree tree;
     public int count = 0;
 
 
@@ -303,7 +303,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Tree a = (Tree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		count = 0; System.out.println(a.chart());
+		count = 0; a.followTable(leaves); System.out.println(a.chart()); leaves.clear();
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("StatementInstrucctions",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -430,11 +430,14 @@ class CUP$Parser$actions {
           case 16: // RegularPhrase ::= IDENTIFICADOR ASIG Expression PTCOMA 
             {
               Tree RESULT =null;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		NodeTree a = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		 count++; 
-                                                                                RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves)));
+                                                                                RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("RegularPhrase",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -449,7 +452,7 @@ class CUP$Parser$actions {
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		NodeTree b = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new NodeTree(".", a, b);
+		RESULT = new NodeTree(".", a, b, leaves);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -464,7 +467,7 @@ class CUP$Parser$actions {
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		NodeTree b = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new NodeTree("|", a, b);
+		RESULT = new NodeTree("|", a, b, leaves);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -476,7 +479,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		NodeTree a = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new NodeTree("+", a, null);
+		RESULT = new NodeTree("+", a, null, leaves);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -488,7 +491,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		NodeTree a = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new NodeTree("*", a, null);
+		RESULT = new NodeTree("*", a, null, leaves);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -500,7 +503,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		NodeTree a = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		RESULT = new NodeTree("?", a, null);
+		RESULT = new NodeTree("?", a, null, leaves);
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
