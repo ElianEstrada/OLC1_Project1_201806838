@@ -5,20 +5,23 @@
  */
 package com.elian_estrada.gui;
 
-
 import com.elian_estrada.controllers.Menu;
 import com.elian_estrada.analyzers.*;
 import java.awt.Color;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -31,38 +34,44 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
-    
     private boolean flagConsole;
     private String nameFile;
     private Menu menu;
     private Parser parser;
-    
+
     public Home() {
         initComponents();
-        this.txtSource.getDocument().addDocumentListener(new DocumentListener (){
+        this.txtSource.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void removeUpdate(DocumentEvent e){
+            public void removeUpdate(DocumentEvent e) {
                 Home.this.txtSourceChanged(e);
             }
-            
+
             @Override
-            public void insertUpdate(DocumentEvent e){
+            public void insertUpdate(DocumentEvent e) {
                 Home.this.txtSourceChanged(e);
             }
-            
+
             @Override
-            public void changedUpdate(DocumentEvent arg0){
+            public void changedUpdate(DocumentEvent arg0) {
                 Home.this.txtSourceChanged(arg0);
             }
         });
+
+        Border line = BorderFactory.createLineBorder(Color.WHITE);
+        Border title = BorderFactory.createTitledBorder(line, "Images");
+        this.pnImages.setBorder(title);
+        this.txtConsole.setBorder(BorderFactory.createTitledBorder(line, "Console"));
+        this.trImages.expandRow(0);
+
         this.jScrollPane1.getVerticalScrollBar().setOpaque(true);
-        this.jScrollPane1.getVerticalScrollBar().setBackground(new Color(32,32,32));
+        this.jScrollPane1.getVerticalScrollBar().setBackground(new Color(32, 32, 32));
         this.jScrollPane1.getVerticalScrollBar().setBorder(null);
         this.jScrollPane1.getVerticalScrollBar().setFocusable(false);
         this.jScrollPane1.getVerticalScrollBar().removeAll();
         this.jScrollPane2.setVisible(false);
-        this.setSize(1150, this.getSize().height - this.jScrollPane2.getSize().height);
-        this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 26 ));
+        this.setSize(this.getSize().width, this.getSize().height - this.jScrollPane2.getSize().height);
+        this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, this.getSize().width, 26));
         this.flagConsole = false;
         this.nameFile = "";
         this.lblTitle.setText("Untitle.olc");
@@ -90,6 +99,9 @@ public class Home extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSource = new javax.swing.JTextArea();
         lblTitle = new javax.swing.JLabel();
+        pnImages = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        trImages = new javax.swing.JTree();
         pnInfo = new javax.swing.JPanel();
         lblOutput = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -120,7 +132,7 @@ public class Home extends javax.swing.JFrame {
                 lblExitMouseExited(evt);
             }
         });
-        jPanel1.add(lblExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 0, 30, 30));
+        jPanel1.add(lblExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(1160, 0, 30, 30));
 
         pnMenu.setBackground(new java.awt.Color(62, 63, 64));
         pnMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -193,7 +205,8 @@ public class Home extends javax.swing.JFrame {
         });
         pnMenu.add(lblSaveFileAs, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, 40, 50));
 
-        lblExecute.setText("Play");
+        lblExecute.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/elian_estrada/images/icons8-play-40.png"))); // NOI18N
+        lblExecute.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblExecute.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblExecuteMouseClicked(evt);
@@ -240,7 +253,41 @@ public class Home extends javax.swing.JFrame {
 
         jPanel1.add(pnTextArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 450, 690));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1150, -1));
+        pnImages.setBackground(new java.awt.Color(32, 32, 32));
+        pnImages.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Images", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        pnImages.setForeground(new java.awt.Color(255, 255, 255));
+        pnImages.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jScrollPane3.setBorder(null);
+
+        trImages.setBackground(new java.awt.Color(32, 32, 32));
+        trImages.setForeground(new java.awt.Color(32, 32, 32));
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Trees");
+        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("f");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("FollowTables");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Expres");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("TransitionTables");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Table");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Automata");
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("AFd");
+        treeNode2.add(treeNode3);
+        treeNode1.add(treeNode2);
+        trImages.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        trImages.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jScrollPane3.setViewportView(trImages);
+
+        pnImages.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 200, 640));
+
+        jPanel1.add(pnImages, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 10, 220, 680));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1190, -1));
 
         pnInfo.setBackground(new java.awt.Color(0, 122, 204));
         pnInfo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -264,7 +311,7 @@ public class Home extends javax.swing.JFrame {
         pnInfo.add(lblOutput, new org.netbeans.lib.awtextra.AbsoluteConstraints(5, 5, -1, -1));
         lblOutput.getAccessibleContext().setAccessibleName("lblOutput");
 
-        getContentPane().add(pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, 1150, 25));
+        getContentPane().add(pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, 1190, 25));
 
         jScrollPane2.setBorder(null);
 
@@ -279,7 +326,7 @@ public class Home extends javax.swing.JFrame {
         txtConsole.setCaretColor(new java.awt.Color(255, 255, 255));
         jScrollPane2.setViewportView(txtConsole);
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 281));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1190, 281));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -290,27 +337,27 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_lblExitMouseClicked
 
     private void lblExitMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExitMouseEntered
-        this.lblExit.setBackground(new Color(60,63,65));
+        this.lblExit.setBackground(new Color(60, 63, 65));
     }//GEN-LAST:event_lblExitMouseEntered
 
     private void lblExitMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExitMouseExited
-        this.lblExit.setBackground(new Color(32,32,32));
+        this.lblExit.setBackground(new Color(32, 32, 32));
     }//GEN-LAST:event_lblExitMouseExited
 
     private void lblOpenFileMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOpenFileMouseEntered
-        this.lblOpenFile.setBackground(new Color(66,67,68));
+        this.lblOpenFile.setBackground(new Color(66, 67, 68));
     }//GEN-LAST:event_lblOpenFileMouseEntered
 
     private void lblOpenFileMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOpenFileMouseExited
-        this.lblOpenFile.setBackground(new  Color(62,63,64));
+        this.lblOpenFile.setBackground(new Color(62, 63, 64));
     }//GEN-LAST:event_lblOpenFileMouseExited
 
     private void lblNewFileMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNewFileMouseEntered
-        this.lblNewFile.setBackground(new Color(66,67,68));
+        this.lblNewFile.setBackground(new Color(66, 67, 68));
     }//GEN-LAST:event_lblNewFileMouseEntered
 
     private void lblNewFileMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNewFileMouseExited
-        this.lblNewFile.setBackground(new  Color(62,63,64));
+        this.lblNewFile.setBackground(new Color(62, 63, 64));
     }//GEN-LAST:event_lblNewFileMouseExited
 
     private void lblSaveFileMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSaveFileMouseEntered
@@ -331,24 +378,24 @@ public class Home extends javax.swing.JFrame {
 
     private void lblOutputMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOutputMouseEntered
         this.lblOutput.setOpaque(true);
-        this.lblOutput.setBackground(new Color(60,130,210));
+        this.lblOutput.setBackground(new Color(60, 130, 210));
     }//GEN-LAST:event_lblOutputMouseEntered
 
     private void lblOutputMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOutputMouseExited
-        this.lblOutput.setBackground(new Color(0,122,204));
+        this.lblOutput.setBackground(new Color(0, 122, 204));
         this.lblOutput.setOpaque(false);
     }//GEN-LAST:event_lblOutputMouseExited
 
     private void lblOutputMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOutputMouseClicked
-        if(!this.flagConsole){
-            this.setSize(1150, this.getSize().height + this.jScrollPane2.getSize().height);
-            this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, 1150, 26 ));
+        if (!this.flagConsole) {
+            this.setSize(this.getSize().width, this.getSize().height + this.jScrollPane2.getSize().height);
+            this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, this.getSize().width, 26));
             this.setLocation(this.getLocation().x, this.getLocation().y - 150);
             this.jScrollPane2.setVisible(true);
             this.flagConsole = true;
-        }else{
-            this.setSize(1150, this.getSize().height - this.jScrollPane2.getSize().height);
-            this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, 1150, 26 ));
+        } else {
+            this.setSize(this.getSize().width, this.getSize().height - this.jScrollPane2.getSize().height);
+            this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 690, this.getSize().width, 26));
             this.setLocation(this.getLocation().x, this.getLocation().y + 150);
             this.jScrollPane2.setVisible(false);
             this.flagConsole = false;
@@ -357,36 +404,36 @@ public class Home extends javax.swing.JFrame {
 
     private void lblSaveFileAsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSaveFileAsMouseClicked
         this.nameFile = this.menu.saveAsFile(this.txtSource.getText());
-        
-        if (nameFile != ""){
+
+        if (nameFile != "") {
             this.lblTitle.setText(nameFile);
         }
     }//GEN-LAST:event_lblSaveFileAsMouseClicked
 
-    private void txtSourceChanged(javax.swing.event.DocumentEvent evt){
-        if(menu.getFlagEdit() && menu.getFilePath() != ""){
+    private void txtSourceChanged(javax.swing.event.DocumentEvent evt) {
+        if (menu.getFlagEdit() && menu.getFilePath() != "") {
             this.lblTitle.setText("*" + this.nameFile);
-        }else if(menu.getFilePath() != ""){
+        } else if (menu.getFilePath() != "") {
             this.lblTitle.setText("*" + this.nameFile);
             menu.setFlagEdit(true);
-        }else{
+        } else {
             menu.setFlagEdit(true);
         }
     }
-    
+
     private void txtSourceInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_txtSourceInputMethodTextChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSourceInputMethodTextChanged
 
     private void lblSaveFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSaveFileMouseClicked
         String name = this.menu.saveFile(this.txtSource.getText());
-        if(this.nameFile == "" && name != ""){
+        if (this.nameFile == "" && name != "") {
             this.nameFile = name;
             this.lblTitle.setText(nameFile);
-        }else if(this.nameFile != ""){
+        } else if (this.nameFile != "") {
             this.lblTitle.setText(this.nameFile);
         }
-        
+
     }//GEN-LAST:event_lblSaveFileMouseClicked
 
     private void lblNewFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNewFileMouseClicked
@@ -399,14 +446,14 @@ public class Home extends javax.swing.JFrame {
 
     private void lblOpenFileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblOpenFileMouseClicked
         String content = null;
-        
-        try{
+
+        try {
             content = this.menu.openFile(this.txtSource.getText()).toString();
-        }catch(Exception e){
+        } catch (Exception e) {
             content = null;
         }
-        
-        if(content != null){
+
+        if (content != null) {
             this.txtSource.setText(content);
             this.nameFile = this.menu.getFilePath().split("/")[this.menu.getFilePath().split("/").length - 1];
             this.lblTitle.setText(this.nameFile);
@@ -415,28 +462,62 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_lblOpenFileMouseClicked
 
     private void lblExecuteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExecuteMouseClicked
-        try{
-            
+        try {
+
             this.lblSaveFileMouseClicked(evt);
             this.menu.setFlagEdit(false);
-            
+
             BufferedReader buffer = new BufferedReader(new FileReader(this.menu.getFilePath()));
-            
-            parser = new Parser(new Scanner(buffer));
-            
+
+            Scanner scanner = new Scanner(buffer);
+            parser = new Parser(scanner);
+
             parser.parse();
+
+            String errorReport = "<!DOCTYPE html>\n<html>\n<head>\n<title>\n Bug Report \n</title>\n"
+                    + "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css\">\n"
+                    + "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js\"></script>\n"
+                    + "</head>\n<body class=\"container grey darken-4 white-text\">\n<h1> <center> Bugs </center> </h1>\n"
+                    + "<ul class = \"collapsible\">\n<li class = \"active\">\n<div class = \"collapsible-header "
+                    + "grey darken-2\"> Lexical Errors </div>\n"
+                    + scanner.drawing(scanner.lexicalError) + "</li>\n"
+                    + "<li>\n<div class = \"collapsible-header grey darken-2\"> Sintactic Errors </div>\n"
+                    + parser.drawing(parser.sintacticError) + "</li>\n</ul>\n<script>\nM.AutoInit();\n</script>\n</body>\n</html>";
+
+            System.out.println(errorReport);
+
+            int erLexical = scanner.lexicalError.size();
+            int erSintactic = parser.sintacticError.size();
+            if (erLexical != 0 || erSintactic != 0) {
+                JOptionPane.showMessageDialog(null, "Lexical Errors: [" + erLexical + "];\n"
+                        + "Sintactic Errors: [" + erSintactic + "]");
+            }
+
+            JOptionPane.showMessageDialog(null, "Analysis Completed");
+
+            File dir = new File(new File(".").getCanonicalPath() + "/Errores_20180683");
+            dir.mkdir();
+            File file = new File(dir.getAbsolutePath() + "/Errors.html");
+            file.createNewFile();
             
-        }catch(Exception e){
+            
+            FileWriter write = new FileWriter(file);
+            write.write(errorReport);
+            write.close();
+
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Que pex :'v" + ex);
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Que pex :'v" + e);
         }
     }//GEN-LAST:event_lblExecuteMouseClicked
 
-   
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblExecute;
     private javax.swing.JLabel lblExit;
     private javax.swing.JLabel lblNewFile;
@@ -445,9 +526,11 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel lblSaveFile;
     private javax.swing.JLabel lblSaveFileAs;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JPanel pnImages;
     private javax.swing.JPanel pnInfo;
     private javax.swing.JPanel pnMenu;
     private javax.swing.JPanel pnTextArea;
+    private javax.swing.JTree trImages;
     private javax.swing.JTextArea txtConsole;
     private javax.swing.JTextArea txtSource;
     // End of variables declaration//GEN-END:variables

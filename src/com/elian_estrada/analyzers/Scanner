@@ -6,6 +6,8 @@
 
 package com.elian_estrada.analyzers;
 import java_cup.runtime.Symbol;
+import com.elian_estrada.classes.LexicalError;
+import java.util.*;
 
 %%
 %class Scanner
@@ -18,6 +20,8 @@ import java_cup.runtime.Symbol;
 
 %{
 
+    public ArrayList<LexicalError> lexicalError = new ArrayList<LexicalError>();
+    int count = 0;
     StringBuffer string = new StringBuffer();
     
     private Symbol symbol(int type){
@@ -28,7 +32,30 @@ import java_cup.runtime.Symbol;
         return new Symbol(type, yyline, yychar, value);
     }
 
+    public String drawing (ArrayList<LexicalError> errorlist){
+        
+        String tables = "<div class=\"collapsible-body\">\n<table class =\"striped\">\n"
+                + "<thead>\n<tr>\n<th> No. </th>\n<th> Description </th>\n<th> Line </th>\n<th> Column </th>\n</thead>\n<tbody>\n";
+        for (int i = 0; i < errorlist.size(); i++){
+            tables += "<tr>\n<td> " + errorlist.get(i).getId() + " </td>\n"
+                    + "<td> " + errorlist.get(i).getDescription() + "</td>\n"
+                    + "<td> " + errorlist.get(i).getLine() + "</td>\n"
+                    + "<td> " + errorlist.get(i).getColumn() + "</td>\n</tr>\n";
+        }
+        
+        tables += "</tbody>\n</table>\n</div>\n";
+        
+        return tables;
+    }
+
 %}
+
+
+%eof{
+
+    System.out.println(lexicalError);
+
+%eof}
 
 L = [a-zA-Z]
 D = [0-9]
@@ -99,4 +126,6 @@ CommentMultiLine = "<!" [^*] ~"!>"|"<!" "!"+ ">"
 . {
     System.out.println("Este es un error lexico: " + yytext() + ", en la linea: " + yyline + 
     ", en la columna: " + yychar);
+    count++;
+    lexicalError.add(new LexicalError(count, yytext() + " No pertenece al lenguaje.", yyline, yychar));
 }

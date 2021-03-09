@@ -9,3 +9,5 @@ nbdist/
 jflex-1.8.2/
 cup/
 *.tar.gz
+/Errores_20180683
+*.html

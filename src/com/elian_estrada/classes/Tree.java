@@ -16,6 +16,11 @@ public class Tree {
     private NodeTree root;
     private String name;
     private int count;
+    private int countStates = 1;
+    private ArrayList<State> state;
+    private Hashtable<String, ArrayList<NodeTree>> listStates;
+    private Hashtable<Integer, ArrayList<NodeTree>> leaves;
+    private Hashtable<String, SymbolTable> symbolTable;
 
     public Tree() {
         this.setRoot(null);
@@ -39,16 +44,50 @@ public class Tree {
             follows += "|" + (leaves.get(i).isEmpty() ? "-" : (leaves.get(i) + "").replace("[", "").replace("]", ""));
         }
 
-        String follow = "digraph G{\nrankdir=TB\nnode [shape = \"record\"];\n"
+        String follow = "digraph G{\nbgcolor = \"#1a1a1a\"\nrankdir=TB\nedge[fontcolor = white, color=white]\n"
+                + "node [shape = \"record\" style=filled fillcolor = \"#313638\" fontcolor = white color = \"#007acc\"];\n"
                 + this.getName() + " [label = \"{ Symbols|" + symbols + "} | { Leaf|" + leaf + "} | {Follow|" + follows + "}\"]\n}";
 
         System.out.println(follow);
         return follow;
     }
 
-    public String transitionsTable() {
+    public String transitionsTable(Hashtable<Integer, ArrayList<NodeTree>> leaves, Hashtable<String, SymbolTable> symbolTable) {
+
+        this.leaves = leaves;
+        this.symbolTable = symbolTable;
+        this.state = new ArrayList<State>();
+
+        AdjacencyList adjacencyList = new AdjacencyList();
+
+        this.listStates.put("S0", this.getRoot().getFirst());
 
         return "";
+    }
+
+    public ArrayList<NodeTree> isRepeated(ArrayList<NodeTree> state) {
+
+        ArrayList<NodeTree> result = new ArrayList<NodeTree>();
+        ArrayList<NodeTree> copy = new ArrayList<NodeTree>();
+
+        if (state.size() > 1) {
+            for (int i = 0; i < state.size() - 1; i++) {
+                for (int j = 1; j < state.size(); j++) {
+                    if (state.get(i).getName().equals(state.get(j).getName())) {
+                        copy = this.leaves.get(state.get(i).getId());
+                        copy.removeAll(this.leaves.get(state.get(j).getId()));
+                        result.addAll(leaves.get(state.get(j).getId()));
+                        result.addAll(copy);
+                    }
+                }
+            }
+        }
+
+        return state;
+    }
+
+    public boolean existState(ArrayList<NodeTree> state) {
+        return true;
     }
 
     public String searchNode(int id) {
@@ -77,7 +116,8 @@ public class Tree {
 
     public String chart() {
 
-        String graph = "digraph G {\nrankdir=TB\nnode [shape = \"record\"];\n"
+        String graph = "digraph G {\nbgcolor = \"#1a1a1a\"\nrankdir=TB\nedge[fontcolor = white, color=white]\n"
+                + "node [shape = \"record\" style=filled fillcolor = \"#313638\" fontcolor = white color = \"#007acc\"];\n"
                 + "root [label = \"" + root.toStringFist() + " | { "
                 + (root.isVoidable() ? "A" : "N") + " | " + root.getName() + " | id: " + root.getId() + " } | " + root.toStringLast() + " \"]\n";;
 

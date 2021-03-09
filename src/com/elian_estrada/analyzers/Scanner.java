@@ -8,6 +8,8 @@
 
 package com.elian_estrada.analyzers;
 import java_cup.runtime.Symbol;
+import com.elian_estrada.classes.LexicalError;
+import java.util.*;
 
 
 /**
@@ -267,6 +269,8 @@ public class Scanner implements java_cup.runtime.Scanner {
 
   /* user code: */
 
+    public ArrayList<LexicalError> lexicalError = new ArrayList<LexicalError>();
+    int count = 0;
     StringBuffer string = new StringBuffer();
     
     private Symbol symbol(int type){
@@ -275,6 +279,22 @@ public class Scanner implements java_cup.runtime.Scanner {
 
     private Symbol symbol(int type, Object value){
         return new Symbol(type, yyline, yychar, value);
+    }
+
+    public String drawing (ArrayList<LexicalError> errorlist){
+        
+        String tables = "<div class=\"collapsible-body\">\n<table class =\"striped\">\n"
+                + "<thead>\n<tr>\n<th> No. </th>\n<th> Description </th>\n<th> Line </th>\n<th> Column </th>\n</thead>\n<tbody>\n";
+        for (int i = 0; i < errorlist.size(); i++){
+            tables += "<tr>\n<td> " + errorlist.get(i).getId() + " </td>\n"
+                    + "<td> " + errorlist.get(i).getDescription() + "</td>\n"
+                    + "<td> " + errorlist.get(i).getLine() + "</td>\n"
+                    + "<td> " + errorlist.get(i).getColumn() + "</td>\n</tr>\n";
+        }
+        
+        tables += "</tbody>\n</table>\n</div>\n";
+        
+        return tables;
     }
 
 
@@ -509,7 +529,10 @@ public class Scanner implements java_cup.runtime.Scanner {
   private void zzDoEOF() throws java.io.IOException {
     if (!zzEOFDone) {
       zzEOFDone = true;
-      yyclose();
+    
+    System.out.println(lexicalError);
+
+  yyclose();
     }
   }
 
@@ -663,6 +686,8 @@ public class Scanner implements java_cup.runtime.Scanner {
           case 1: 
             { System.out.println("Este es un error lexico: " + yytext() + ", en la linea: " + yyline + 
     ", en la columna: " + yychar);
+    count++;
+    lexicalError.add(new LexicalError(count, yytext() + " No pertenece al lenguaje.", yyline, yychar));
             } 
             // fall through
           case 34: break;

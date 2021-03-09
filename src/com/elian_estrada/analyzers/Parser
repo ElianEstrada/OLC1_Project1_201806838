@@ -18,27 +18,54 @@ action code
     public Hashtable<Integer, ArrayList<NodeTree>> leaves = new Hashtable<Integer, ArrayList<NodeTree>>();
     //public Tree tree;
     public int count = 0;
-
 :};
 
 parser code
 {: 
+
+    int countErrors = 0;
+    public boolean errors = false;
+    public ArrayList<SintacticError> sintacticError = new ArrayList<SintacticError>();
+
     /*Metodo para errores sintacticos*/
     public void syntax_error(Symbol s){
-        
+        errors = true;
         System.out.println("Error sintactico en la linea: " + (s.left) + 
         " columna: " + s.right + ". No se esperaba este componente: " + s.value + 
         ".");
+        countErrors++;
+        sintacticError.add(new SintacticError(countErrors, "No se esperaba: " + s.value + ".", s.left, s.right));
+
     }
 
     /*Metodo para errores fatales*/
-
+    
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception {
-
+        errors = true;
         System.out.println("Error sintactico irrecuperable en la linea: " + 
         (s.left) + " columna: " + s.right + ". Componente: " + s.value + 
         " no reconocido.");
+        countErrors++;
+        sintacticError.add(new SintacticError(countErrors, "Fatal Error, no se esperaba: " + s.value + ".", s.left, s.right));
+        System.out.println(sintacticError);
     }
+
+    public String drawing (ArrayList<SintacticError> errorlist){
+        
+        String tables = "<div class=\"collapsible-body\">\n<table class =\"striped\">\n"
+                + "<thead>\n<tr>\n<th> No. </th>\n<th> Description </th>\n<th> Line </th>\n<th> Column </th>\n</thead>\n<tbody>\n";
+        for (int i = 0; i < errorlist.size(); i++){
+            tables += "<tr>\n<td> " + errorlist.get(i).getId() + " </td>\n"
+                    + "<td> " + errorlist.get(i).getDescription() + "</td>\n"
+                    + "<td> " + errorlist.get(i).getLine() + "</td>\n"
+                    + "<td> " + errorlist.get(i).getColumn() + "</td>\n</tr>\n";
+        }
+        
+        tables += "</tbody>\n</table>\n</div>\n";
+        
+        return tables;
+    }
+
 
 :};
 
@@ -73,23 +100,29 @@ precedence left KLEAN, POS, BOOL;
 
 start with Init;
 
-Init ::= LLAVIZQ Statement PORCENT PORCENT Validation LLAVDER;
+Init ::= LLAVIZQ Statement PORCENT PORCENT Validation LLAVDER                   {:if(errors){System.out.println(sintacticError);}:}
+        |error
+;                  
 
 Statement ::= 
      StatementInstrucctions Statement
     |StatementInstrucctions
-    |error Statement
+    |error PTCOMA Statement
 ;
 
 StatementInstrucctions ::= 
-     Set:a                                                                      {:System.out.println(symbolTable);:}
-    |RegularPhrase:a                                                            {:count = 0; a.followTable(leaves); System.out.println(a.chart()); leaves.clear();:}  
+     Set:a                                                                      {:if(!errors) { System.out.println(symbolTable); }:}
+    |RegularPhrase:a                                                            {:
+                                                                                    if(!errors) {count = 0; a.followTable(leaves); 
+                                                                                        System.out.println(a.chart()); leaves.clear(); }
+                                                                                :}  
 ;
 
 Set ::= 
-     CONJ:a DOSPUN IDENTIFICADOR:b ASIG SetType:d PTCOMA                        {:System.out.println(a + ": " + b + "-> " + d + ";"); 
-                                                                                  symbolTable.put(b, new SymbolTable(b, d)); RESULT = a;:}
-    /*|error Set                                                                  {::}*/
+     CONJ:a DOSPUN IDENTIFICADOR:b ASIG SetType:d PTCOMA                        {: 
+                                                                                    if(!errors) { symbolTable.put(b, new SymbolTable(b, d)); RESULT = a; }
+                                                                                :}
+    /*|error PTCOMA*/
 ;
 
 SetType ::= 
@@ -113,29 +146,35 @@ ListSet ::=
 ;
 
 RegularPhrase ::= 
-     IDENTIFICADOR:b ASIG Expression:a PTCOMA                                   {: count++; 
-                                                                                RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b);:}
+     IDENTIFICADOR:b ASIG Expression:a PTCOMA                                   {: 
+                                                                                    if(!errors){
+                                                                                        count++; 
+                                                                                        RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b);
+                                                                                    }
+                                                                                :}
     /*|error RegularPhrase                                                        {::}*/
 ;
 
 Expression ::=
-     CONCAT Expression:a Expression:b                                           {:RESULT = new NodeTree(".", a, b, leaves);:}
-    |DISYN Expression:a Expression:b                                            {:RESULT = new NodeTree("|", a, b, leaves);:}
-    |POS Expression:a                                                           {:RESULT = new NodeTree("+", a, null, leaves);:}
-    |KLEAN Expression:a                                                         {:RESULT = new NodeTree("*", a, null, leaves);:}
-    |BOOL Expression:a                                                          {:RESULT = new NodeTree("?", a, null, leaves);:}
-    |LLAVIZQ IDENTIFICADOR:a LLAVDER                                            {: count++; RESULT = new NodeTree(a, count, leaves);:}
-    |CADENA_TEXTO:a                                                             {: count++; RESULT = new NodeTree(a, count, leaves);:}
-    |NLINE:a                                                                    {: count++; RESULT = new NodeTree(a, count, leaves);:}
-    |COMILLA:a                                                                  {: count++; RESULT = new NodeTree(a, count, leaves);:}
-    |COMDOBLE:a                                                                 {: count++; RESULT = new NodeTree(a, count, leaves);:}
+     CONCAT Expression:a Expression:b                                           {:if(!errors){RESULT = new NodeTree(".", a, b, leaves);}:}
+    |DISYN Expression:a Expression:b                                            {:if(!errors){RESULT = new NodeTree("|", a, b, leaves);}:}
+    |POS Expression:a                                                           {:if(!errors){RESULT = new NodeTree("+", a, null, leaves);}:}
+    |KLEAN Expression:a                                                         {:if(!errors){RESULT = new NodeTree("*", a, null, leaves);}:}
+    |BOOL Expression:a                                                          {:if(!errors){RESULT = new NodeTree("?", a, null, leaves);}:}
+    |LLAVIZQ IDENTIFICADOR:a LLAVDER                                            {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
+    |CADENA_TEXTO:a                                                             {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
+    |NLINE:a                                                                    {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
+    |COMILLA:a                                                                  {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
+    |COMDOBLE:a                                                                 {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
 ;
 
 
 Validation ::= 
      ValidationInstrucctions Validation
     |ValidationInstrucctions
+    /*|error LLAVDER*/
     |error Validation
+    |error LLAVDER
 ;
 
 ValidationInstrucctions ::= 
