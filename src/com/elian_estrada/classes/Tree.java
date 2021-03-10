@@ -6,6 +6,7 @@
 package com.elian_estrada.classes;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -17,8 +18,10 @@ public class Tree {
     private String name;
     private int count;
     private int countStates = 1;
-    private ArrayList<State> state;
-    private Hashtable<String, ArrayList<NodeTree>> listStates;
+    private ArrayList<String> terminals;
+    private ArrayList<State> states;
+    private Stack<ArrayList<NodeTree>> valuateState;
+    private Hashtable<ArrayList<NodeTree>, String> listStates;
     private Hashtable<Integer, ArrayList<NodeTree>> leaves;
     private Hashtable<String, SymbolTable> symbolTable;
 
@@ -26,9 +29,12 @@ public class Tree {
         this.setRoot(null);
     }
 
-    public Tree(NodeTree root, String name) {
+    public Tree(NodeTree root, String name, ArrayList<String> terminals) {
         this.setRoot(root);
         this.setName(name);
+        this.terminals = terminals;
+        this.valuateState = new Stack<ArrayList<NodeTree>>();
+        this.listStates = new Hashtable<ArrayList<NodeTree>, String>();
         count = 0;
     }
 
@@ -56,38 +62,86 @@ public class Tree {
 
         this.leaves = leaves;
         this.symbolTable = symbolTable;
-        this.state = new ArrayList<State>();
-
+        this.states = new ArrayList<State>();
+        
         AdjacencyList adjacencyList = new AdjacencyList();
-
-        this.listStates.put("S0", this.getRoot().getFirst());
-
-        return "";
-    }
-
-    public ArrayList<NodeTree> isRepeated(ArrayList<NodeTree> state) {
-
-        ArrayList<NodeTree> result = new ArrayList<NodeTree>();
+        this.listStates.put(this.getRoot().getFirst(), "S0");
+        this.valuateState.add(this.getRoot().getFirst());
+        
+        Vertex aux = new Vertex("S0");
+        State state = new State("S0");
         ArrayList<NodeTree> copy = new ArrayList<NodeTree>();
-
-        if (state.size() > 1) {
-            for (int i = 0; i < state.size() - 1; i++) {
-                for (int j = 1; j < state.size(); j++) {
-                    if (state.get(i).getName().equals(state.get(j).getName())) {
-                        copy = this.leaves.get(state.get(i).getId());
-                        copy.removeAll(this.leaves.get(state.get(j).getId()));
-                        result.addAll(leaves.get(state.get(j).getId()));
-                        result.addAll(copy);
+        ArrayList<NodeTree> result = new ArrayList<NodeTree>();
+        SymbolTable symbol;
+        int index = 0;
+        while(!this.valuateState.empty()){
+            for (int i = 0; i < this.terminals.size(); i++){
+                for(int j = 0; j < this.valuateState.get(0).size(); j++){
+                    if(this.valuateState.get(0).get(j).getName().equals(this.terminals.get(i))){
+                        if(result.isEmpty()){
+                            result = this.leaves.get(this.valuateState.get(0).get(j).getId());
+                            state.setTransitionName(this.terminals.get(i));
+                        }else{
+                            copy = this.leaves.get(this.valuateState.get(0).get(j).getId());
+                            for(int k = 0; k < copy.size(); k++){
+                                if(!result.contains(copy.get(k).getId())){
+                                    result.add(copy.get(k));
+                                }
+                            }
+                        }
                     }
                 }
+                if(this.listStates.get(result) == null && result.size() != 0){
+                    this.listStates.put(result, "S" + this.countStates);
+                    state.setDestinationState("S" + this.countStates);
+                    symbol = this.symbolTable.get(state.getTransitionName());
+                    if(symbol == null){
+                        state.setTransitionValue(Pattern.compile(state.getTransitionName()));
+                    }else{
+                        state.setTransitionValue(symbol.getValues());
+                    }
+                    if(result.contains(this.getRoot().getRight())){
+                        state.setAcceptance(true);
+                    }else{
+                        state.setAcceptance(false);
+                    }
+                    this.states.add(state);
+                    //state = new State(this.listStates.get(this.valuateState.get(0)));
+                    this.valuateState.addElement(result);
+                    this.countStates++;
+                }else if(result.size() != 0){
+                    state.setDestinationState(this.listStates.get(result));
+                    symbol = this.symbolTable.get(state.getTransitionName());
+                    if(symbol == null){
+                        state.setTransitionValue(Pattern.compile(state.getTransitionName()));
+                    }else{
+                        state.setTransitionValue(symbol.getValues());
+                    }
+                    if(result.contains(this.getRoot().getRight())){
+                        state.setAcceptance(true);
+                    }else{
+                        state.setAcceptance(false);
+                    }
+                    this.states.add(state);
+                    //state = new State(this.listStates.get(this.valuateState.get(0)));
+                }
+                state = new State(this.listStates.get(this.valuateState.get(0)));
+                result = new ArrayList<NodeTree>();
+                copy = new ArrayList<NodeTree>();
+            }
+            this.valuateState.remove(0);
+            if(!this.valuateState.isEmpty()){
+                state = new State(this.listStates.get(this.valuateState.get(0)));
             }
         }
 
-        return state;
-    }
-
-    public boolean existState(ArrayList<NodeTree> state) {
-        return true;
+        for(State afd: this.states){
+            adjacencyList.addVertex(afd);
+        }
+        adjacencyList.print();
+        System.out.println(this.states);
+        
+        return "";
     }
 
     public String searchNode(int id) {

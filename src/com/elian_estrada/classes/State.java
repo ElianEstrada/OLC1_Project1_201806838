@@ -17,12 +17,18 @@ public class State {
     private String destinationState;
     private String transitionName;
     private Pattern transitionValue;
+    private boolean acceptance;
     
-    public State(String currentState, String destinationSatate, String transitionName, Pattern transitionValue){
+    public State(String currentState, String destinationState, String transitionName, Pattern transitionValue, boolean acceptance){
         this.setCurrentState(currentState);
         this.setDestinationState(destinationState);
         this.setTransitionName(transitionName);
         this.setTransitionValue(transitionValue);
+        this.setAcceptance(acceptance);
+    }
+    
+    public State(String currentState){
+        this.setCurrentState(currentState);
     }
 
     public String getCurrentState() {
@@ -55,6 +61,19 @@ public class State {
 
     public void setTransitionValue(Pattern transitionValue) {
         this.transitionValue = transitionValue;
+    }
+
+    public boolean isAcceptance() {
+        return acceptance;
+    }
+
+    public void setAcceptance(boolean acceptance) {
+        this.acceptance = acceptance;
+    }
+
+    @Override
+    public String toString() {
+        return currentState + "-" + transitionName + "->" + destinationState + " acceptance: " + this.acceptance + "\n";
     }
     
     

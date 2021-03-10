@@ -13,21 +13,21 @@ import java.util.regex.Pattern;
  * @author elian_estrada
  */
 public class Vertex {
-    
+
     private String name;
     private Pattern values;
     private String edge;
     private ArrayList<Vertex> neighbors;
     private boolean acceptance;
-    
-    public Vertex(String name){
-        
+
+    public Vertex(String name) {
+
         this.setName(name);
         this.setValues(null);
         this.setEdge("");
         this.setNeighbors(new ArrayList<Vertex>());
         this.setAcceptance(false);
-        
+
     }
 
     public String getEdge() {
@@ -37,37 +37,43 @@ public class Vertex {
     public void setEdge(String edge) {
         this.edge = edge;
     }
-    
-    public Vertex(String name, String edge, Pattern values, boolean acceptance){
+
+    public Vertex(String name, String edge, Pattern values, boolean acceptance) {
         this.setName(name);
         this.setEdge(edge);
         this.setValues(values);
         this.setAcceptance(acceptance);
     }
-    
-    public boolean addNeighbors(String name, String edge, Pattern values, boolean acceptance){
-        
+
+    public boolean addNeighbors(String name, String edge, Pattern values, boolean acceptance) {
+
         Vertex vertex = new Vertex(name);
         vertex.setValues(values);
         vertex.setEdge(edge);
         vertex.setAcceptance(acceptance);
         this.getNeighbors().add(vertex);
-        
+
         return true;
     }
 
-    public void print(StringBuilder dot){
-        Vertex aux = this.neighbors.get(0);
-        int count = 1;
-        while(aux != null){
-            dot.append("edge[label = \"" + aux.getEdge() + " fontseize = 5]\n" + this.getName());
-            dot.append("->" + aux.getName() + ";\n");
-            
+    public void print(StringBuilder dot) {
+        Vertex aux;
+        int count = 0;
+        while (count < this.neighbors.size()) {
             aux = this.neighbors.get(count);
+            if (aux.isAcceptance()) {
+                dot.append("node [shape = \"doublecircle\"];\n");
+                dot.append("edge[label = \"" + aux.getEdge() + "\" fontseize = 5]\n" + this.getName());
+                dot.append("->" + aux.getName() + ";\n");
+            } else {
+                dot.append("edge[label = \"" + aux.getEdge() + "\" fontseize = 5]\n" + this.getName());
+                dot.append("->" + aux.getName() + ";\n");
+            }
+
             count++;
         }
     }
-    
+
     public String getName() {
         return name;
     }
@@ -99,7 +105,5 @@ public class Vertex {
     public void setAcceptance(boolean acceptance) {
         this.acceptance = acceptance;
     }
-    
-    
-    
+
 }

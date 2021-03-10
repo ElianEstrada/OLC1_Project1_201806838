@@ -16,8 +16,10 @@ action code
 
     public Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
     public Hashtable<Integer, ArrayList<NodeTree>> leaves = new Hashtable<Integer, ArrayList<NodeTree>>();
+    public ArrayList<String> terminalSymbol = new ArrayList<String>();
     //public Tree tree;
     public int count = 0;
+    public int countAfn = 0;
 :};
 
 parser code
@@ -113,8 +115,8 @@ Statement ::=
 StatementInstrucctions ::= 
      Set:a                                                                      {:if(!errors) { System.out.println(symbolTable); }:}
     |RegularPhrase:a                                                            {:
-                                                                                    if(!errors) {count = 0; a.followTable(leaves); 
-                                                                                        System.out.println(a.chart()); leaves.clear(); }
+                                                                                    if(!errors) {count = 0; a.followTable(leaves); a.transitionsTable(leaves, symbolTable); 
+                                                                                        System.out.println(a.chart()); leaves.clear(); terminalSymbol.clear(); }
                                                                                 :}  
 ;
 
@@ -148,8 +150,8 @@ ListSet ::=
 RegularPhrase ::= 
      IDENTIFICADOR:b ASIG Expression:a PTCOMA                                   {: 
                                                                                     if(!errors){
-                                                                                        count++; 
-                                                                                        RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b);
+                                                                                        count++;
+                                                                                        RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b, terminalSymbol);
                                                                                     }
                                                                                 :}
     /*|error RegularPhrase                                                        {::}*/
@@ -161,11 +163,11 @@ Expression ::=
     |POS Expression:a                                                           {:if(!errors){RESULT = new NodeTree("+", a, null, leaves);}:}
     |KLEAN Expression:a                                                         {:if(!errors){RESULT = new NodeTree("*", a, null, leaves);}:}
     |BOOL Expression:a                                                          {:if(!errors){RESULT = new NodeTree("?", a, null, leaves);}:}
-    |LLAVIZQ IDENTIFICADOR:a LLAVDER                                            {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
-    |CADENA_TEXTO:a                                                             {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
-    |NLINE:a                                                                    {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
-    |COMILLA:a                                                                  {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
-    |COMDOBLE:a                                                                 {:if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}:}
+    |LLAVIZQ IDENTIFICADOR:a LLAVDER                                            {:if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}:}
+    |CADENA_TEXTO:a                                                             {:if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}:}
+    |NLINE:a                                                                    {:if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}:}
+    |COMILLA:a                                                                  {:if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}:}
+    |COMDOBLE:a                                                                 {:if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}:}
 ;
 
 

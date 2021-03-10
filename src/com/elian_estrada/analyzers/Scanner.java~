@@ -529,7 +529,10 @@ public class Scanner implements java_cup.runtime.Scanner {
   private void zzDoEOF() throws java.io.IOException {
     if (!zzEOFDone) {
       zzEOFDone = true;
-      yyclose();
+    
+    System.out.println(lexicalError);
+
+  yyclose();
     }
   }
 
@@ -676,10 +679,7 @@ public class Scanner implements java_cup.runtime.Scanner {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
             zzDoEOF();
-          { 
-    System.out.println(lexicalError);
-
- }
+          { return new java_cup.runtime.Symbol(sym.EOF); }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {

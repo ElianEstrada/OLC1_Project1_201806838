@@ -17,6 +17,7 @@ public class NodeTree {
     private NodeTree left;
     private NodeTree right;
     private String name;
+    private String afnd;
     private int id;
     private ArrayList<NodeTree> first;
     private ArrayList<NodeTree> last;
@@ -206,11 +207,19 @@ public class NodeTree {
         this.voidable = voidable;
     }
 
+    public String getAfnd() {
+        return afnd;
+    }
+
+    public void setAfnd(String afnd) {
+        this.afnd = afnd;
+    }
+
+    
     @Override
     public String toString() {
         return "" + id;
     }
 
-    
     
 }

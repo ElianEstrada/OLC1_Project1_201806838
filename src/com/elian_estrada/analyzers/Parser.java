@@ -241,8 +241,10 @@ class CUP$Parser$actions {
 
     public Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
     public Hashtable<Integer, ArrayList<NodeTree>> leaves = new Hashtable<Integer, ArrayList<NodeTree>>();
+    public ArrayList<String> terminalSymbol = new ArrayList<String>();
     //public Tree tree;
     public int count = 0;
+    public int countAfn = 0;
 
   private final Parser parser;
 
@@ -344,8 +346,8 @@ class CUP$Parser$actions {
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Tree a = (Tree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-                                                                                    if(!errors) {count = 0; a.followTable(leaves); 
-                                                                                        System.out.println(a.chart()); leaves.clear(); }
+                                                                                    if(!errors) {count = 0; a.followTable(leaves); a.transitionsTable(leaves, symbolTable); 
+                                                                                        System.out.println(a.chart()); leaves.clear(); terminalSymbol.clear(); }
                                                                                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("StatementInstrucctions",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -482,8 +484,8 @@ class CUP$Parser$actions {
 		NodeTree a = (NodeTree)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
 		 
                                                                                     if(!errors){
-                                                                                        count++; 
-                                                                                        RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b);
+                                                                                        count++;
+                                                                                        RESULT = new Tree(new NodeTree(".", a, new NodeTree("¿", count, leaves), leaves), b, terminalSymbol);
                                                                                     }
                                                                                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("RegularPhrase",9, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -563,7 +565,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}
+		if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -575,7 +577,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}
+		if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -587,7 +589,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}
+		if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -599,7 +601,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}
+		if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -611,7 +613,7 @@ class CUP$Parser$actions {
 		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		if(!errors){count++; RESULT = new NodeTree(a, count, leaves);}
+		if(!errors){count++; if(!terminalSymbol.contains(a)) {terminalSymbol.add(a);} RESULT = new NodeTree(a, count, leaves);}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Expression",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
