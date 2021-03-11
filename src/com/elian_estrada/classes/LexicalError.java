@@ -23,21 +23,4 @@ public class LexicalError extends SintacticError{
         return "LexicalError{" + "id=" + id + ", description=" + description + ", line=" + line + ", column=" + column + '}';
     }
     
-    
-    /*public String drawing (ArrayList<> errorlist){
-        
-        String tables = "<div class=\"collapsible-body\">\n<table class =\"striped\">\n"
-                + "<thead>\n<tr>\n<th> No. </th>\n<th> Description </th>\n<th> Line </th>\n<th> Column </th>\n</thead>\n<tbody>\n";
-        for (int i = 0; i < errorlist.size(); i++){
-            tables += "<tr>\n<td> " + errorlist.get(i).getId() + " </td>\n"
-                    + "<td> " + errorlist.get(i).getDescription() + "</td>\n"
-                    + "<td> " + errorlist.get(i).getLine() + "</td>\n"
-                    + "<td> " + errorlist.get(i).getColumn() + "</td>\n</tr>\n";
-        }
-        
-        tables += "</tbody>\n</table>\n</div>\n";
-        
-        return tables;
-    }*/
-    
 }

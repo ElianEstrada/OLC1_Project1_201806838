@@ -1,0 +1,50 @@
+Init ::= tk_llavI Statement tk_procent tk_procent Validations tk_llavD
+
+Statement ::= 
+     StatementInstrucctions Statement
+    |StatementInstrucctions
+
+StatementInstrucctions ::= 
+     Set
+    |RegularPhrase
+
+Set ::= 
+    res_conj tk_dospun tk_id tk_asig SetType tk_ptcoma
+
+SetType ::= 
+    Signs SetTypeP
+
+Signs ::= 
+     tk_simbols
+    |tk_letter
+    |tk_digit
+
+SetTypeP ::= 
+     tk_rang Signs
+    |ListSet
+
+ListSet ::= 
+     tk_coma Signs ListSet
+    |epsilon
+
+RegularPhrase ::= 
+    tk_id tk_asig Expression tk_ptcoma
+
+Expression ::= 
+     tk_concat Expression Expression
+    |tk_disyn Expression Expression
+    |tk_pos Expression
+    |tk_kleene Expression
+    |tk_bool Expression
+    |tk_llavI tk_id tk_llavD
+    |tk_cadena
+    |tk_nline
+    |tk_comilla
+    |tk_comdoble
+
+Validations ::= 
+     ValidationsInstructions Validations
+    |ValidationsInstructions
+
+ValidationsInstructions ::= 
+    tk_id tk_dospun tk_cadena tk_ptcoma

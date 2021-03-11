@@ -73,9 +73,7 @@ public class Home extends javax.swing.JFrame {
 
         Border line = BorderFactory.createLineBorder(Color.WHITE);
         Border title = BorderFactory.createTitledBorder(line, "Images");
-        this.pnImages.setBorder(title);
         this.txtConsole.setBorder(BorderFactory.createTitledBorder(line, "Console"));
-        this.trImages.expandRow(0);
 
         this.jScrollPane1.getVerticalScrollBar().setOpaque(true);
         this.jScrollPane1.getVerticalScrollBar().setBackground(new Color(32, 32, 32));
@@ -114,9 +112,6 @@ public class Home extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSource = new javax.swing.JTextArea();
         lblTitle = new javax.swing.JLabel();
-        pnImages = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        trImages = new javax.swing.JTree();
         cbImages = new javax.swing.JComboBox<>();
         lblImage = new javax.swing.JLabel();
         pnInfo = new javax.swing.JPanel();
@@ -288,40 +283,6 @@ public class Home extends javax.swing.JFrame {
 
         jPanel1.add(pnTextArea, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 0, 450, 690));
 
-        pnImages.setBackground(new java.awt.Color(32, 32, 32));
-        pnImages.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Images", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
-        pnImages.setForeground(new java.awt.Color(255, 255, 255));
-        pnImages.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jScrollPane3.setBorder(null);
-
-        trImages.setBackground(new java.awt.Color(32, 32, 32));
-        trImages.setForeground(new java.awt.Color(32, 32, 32));
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
-        javax.swing.tree.DefaultMutableTreeNode treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Trees");
-        javax.swing.tree.DefaultMutableTreeNode treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("f");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("FollowTables");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Expres");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("TransitionTables");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("Table");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("Automata");
-        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("AFd");
-        treeNode2.add(treeNode3);
-        treeNode1.add(treeNode2);
-        trImages.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        trImages.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jScrollPane3.setViewportView(trImages);
-
-        pnImages.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 200, 640));
-
-        jPanel1.add(pnImages, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 10, 220, 680));
-
         cbImages.setBackground(new java.awt.Color(32, 32, 32));
         cbImages.setForeground(new java.awt.Color(255, 255, 255));
         cbImages.addItemListener(new java.awt.event.ItemListener() {
@@ -329,8 +290,8 @@ public class Home extends javax.swing.JFrame {
                 cbImagesItemStateChanged(evt);
             }
         });
-        jPanel1.add(cbImages, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 50, 410, 30));
-        jPanel1.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(765, 90, 400, 510));
+        jPanel1.add(cbImages, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 40, 410, 30));
+        jPanel1.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(535, 90, 630, 580));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1190, -1));
 
@@ -601,7 +562,7 @@ public class Home extends javax.swing.JFrame {
 
                 jsonShow += "]";
 
-                File dir = new File(new File(".").getCanonicalPath() + "/Outs_20180683");
+                File dir = new File(new File(".").getCanonicalPath() + "/Outs_201806838");
                 dir.mkdir();
                 String[] name;
                 if (this.nameFile.contains(".")) {
@@ -678,7 +639,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblBugs;
     private javax.swing.JLabel lblExecute;
     private javax.swing.JLabel lblExit;
@@ -690,11 +650,9 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel lblSaveFile;
     private javax.swing.JLabel lblSaveFileAs;
     private javax.swing.JLabel lblTitle;
-    private javax.swing.JPanel pnImages;
     private javax.swing.JPanel pnInfo;
     private javax.swing.JPanel pnMenu;
     private javax.swing.JPanel pnTextArea;
-    private javax.swing.JTree trImages;
     private javax.swing.JTextArea txtConsole;
     private javax.swing.JTextArea txtSource;
     // End of variables declaration//GEN-END:variables
