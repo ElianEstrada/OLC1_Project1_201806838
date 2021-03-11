@@ -189,6 +189,7 @@ public class Parser extends java_cup.runtime.lr_parser {
 
     int countErrors = 0;
     public boolean errors = false;
+    public ArrayList<Validation> validations = new ArrayList<Validation>();
     public ArrayList<SintacticError> sintacticError = new ArrayList<SintacticError>();
     public Hashtable<String, SymbolTable> symbolTableGlobal = new Hashtable<String, SymbolTable>();
 
@@ -283,10 +284,13 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 1: // Init ::= LLAVIZQ Statement PORCENT PORCENT Validation LLAVDER 
+          case 1: // Init ::= LLAVIZQ Statement PORCENT PORCENT Validations LLAVDER 
             {
               Object RESULT =null;
-		if(errors){System.out.println(sintacticError);}
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		Validation a = (Validation)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		if(errors){}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("Init",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -619,46 +623,58 @@ class CUP$Parser$actions {
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // Validation ::= ValidationInstrucctions Validation 
+          case 28: // Validations ::= ValidationInstrucctions Validations 
             {
-              Object RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validation",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              Validation RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		InputString a = (InputString)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		if(!errors){validations.add(a.validation());}
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validations",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // Validation ::= ValidationInstrucctions 
+          case 29: // Validations ::= ValidationInstrucctions 
             {
-              Object RESULT =null;
-
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validation",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              Validation RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
+		InputString a = (InputString)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
+		if(!errors){validations.add(a.validation());}
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validations",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 30: // Validation ::= error Validation 
+          case 30: // Validations ::= error Validations 
             {
-              Object RESULT =null;
+              Validation RESULT =null;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validation",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validations",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 31: // Validation ::= error LLAVDER 
+          case 31: // Validations ::= error LLAVDER 
             {
-              Object RESULT =null;
+              Validation RESULT =null;
 
-              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validation",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
+              CUP$Parser$result = parser.getSymbolFactory().newSymbol("Validations",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
           case 32: // ValidationInstrucctions ::= IDENTIFICADOR DOSPUN CADENA_TEXTO PTCOMA 
             {
-              Object RESULT =null;
-
+              InputString RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
+		if(!errors){RESULT = new InputString(a, b, symbolTable);}
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ValidationInstrucctions",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

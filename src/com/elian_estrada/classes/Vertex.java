@@ -30,6 +30,10 @@ public class Vertex {
 
     }
 
+    public Vertex(){
+        
+    }
+    
     public String getEdge() {
         return edge;
     }
@@ -65,7 +69,7 @@ public class Vertex {
                 dot.append("node [shape = \"doublecircle\"];\n");
             }
             switch(aux.getEdge()){
-                case "\n":
+                case "\\n":
                     dot.append("edge[label = \"\\").append(aux.getEdge()).append("\" fontseize = 5]\n").append(this.getName());
                     break;
                 case "\"":

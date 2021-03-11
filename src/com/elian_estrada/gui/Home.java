@@ -9,6 +9,7 @@ import com.elian_estrada.controllers.Menu;
 import com.elian_estrada.analyzers.*;
 import com.elian_estrada.classes.Expression;
 import com.elian_estrada.classes.SymbolTable;
+import com.elian_estrada.classes.Validation;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.LayoutManager;
@@ -504,7 +505,7 @@ public class Home extends javax.swing.JFrame {
             this.menu.setFlagEdit(false);
         }
     }//GEN-LAST:event_lblOpenFileMouseClicked
-    
+
     private void lblExecuteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExecuteMouseClicked
         try {
 
@@ -518,7 +519,6 @@ public class Home extends javax.swing.JFrame {
 
             parser.parse();
 
-            
             String errorReport = "<!DOCTYPE html>\n<html>\n<head>\n<title>\n Bug Report \n</title>\n"
                     + "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css\">\n"
                     + "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js\"></script>\n"
@@ -533,65 +533,107 @@ public class Home extends javax.swing.JFrame {
 
             int erLexical = scanner.lexicalError.size();
             int erSintactic = parser.sintacticError.size();
-            
+
             if (erLexical != 0 || erSintactic != 0) {
                 JOptionPane.showMessageDialog(null, "Lexical Errors: [" + erLexical + "];\n"
                         + "Sintactic Errors: [" + erSintactic + "]");
-            }else if(erSintactic == 0){
+            } else if (erSintactic == 0) {
                 Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
-                
+                ArrayList<Validation> validations = new ArrayList<Validation>();
+
                 symbolTable = parser.symbolTableGlobal;
-                
+                validations = parser.validations;
+
                 Enumeration enumeration = symbolTable.elements();
                 SymbolTable symbol;
                 Expression expression;
                 DefaultMutableTreeNode root = new DefaultMutableTreeNode("Images");
                 ArrayList<String> pathImages = new ArrayList<String>();
                 //TreeModel tree = this.trImages.getModel();
-                while(enumeration.hasMoreElements()){
+                while (enumeration.hasMoreElements()) {
                     symbol = (SymbolTable) enumeration.nextElement();
                     expression = symbol.getExpresion();
-                    if(expression != null){
-                        try{
-                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathTree() + ".dot -o " + expression.getPathTree() + ".png " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathTree() + ".dot -o " + expression.getPathTree() + ".pdf " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathFollow()+ ".dot -o " + expression.getPathFollow() + ".png " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathFollow() + ".dot -o " + expression.getPathFollow() + ".pdf " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathTransitions() + ".dot -o " + expression.getPathTransitions() + ".png " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathTransitions() + ".dot -o " + expression.getPathTransitions() + ".pdf " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathAFD() + ".dot -o " + expression.getPathAFD() + ".png " ).waitFor();
-                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathAFD() + ".dot -o " + expression.getPathAFD() + ".pdf " ).waitFor();
+                    if (expression != null) {
+                        try {
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathTree() + ".dot -o " + expression.getPathTree() + ".png ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathTree() + ".dot -o " + expression.getPathTree() + ".pdf ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathFollow() + ".dot -o " + expression.getPathFollow() + ".png ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathFollow() + ".dot -o " + expression.getPathFollow() + ".pdf ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathTransitions() + ".dot -o " + expression.getPathTransitions() + ".png ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathTransitions() + ".dot -o " + expression.getPathTransitions() + ".pdf ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathAFD() + ".dot -o " + expression.getPathAFD() + ".png ").waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathAFD() + ".dot -o " + expression.getPathAFD() + ".pdf ").waitFor();
                             /*Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathAFN() + ".dot -o AFND_201806838/" + expression.getPathAFN() + ".png " ).waitFor();
                             Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathAFN() + ".dot -o AFND_201806838/" + expression.getPathAFN() + ".pdf " ).waitFor();*/
-                            
-                            
-                            
-                            
-                        }catch(Exception e){
+
+                        } catch (Exception e) {
                             JOptionPane.showMessageDialog(null, "Error, Generated Report Failed");
                         }
-                        
+
                         pathImages.add(expression.getPathAFD());
                         pathImages.add(expression.getPathFollow());
                         pathImages.add(expression.getPathTransitions());
                         pathImages.add(expression.getPathTree());
-                        
+
                     }
                 }
-                
-                for(String items: pathImages){
+
+                for (String items : pathImages) {
                     this.cbImages.addItem(items);
                 }
+                String consoleShow = "";
+                String jsonShow = "[\n";
+                int count = 1;
+                for (Validation item : validations) {
+                    consoleShow += item.toString() + "\n";
+                    if (item.isResult()) {
+                        jsonShow += "\t{\n\t\t\"Valor\":\"" + item.getValue() + "\",\n";
+                        jsonShow += "\t\t\"Expresión Regular\":\"" + item.getRegular() + "\",\n";
+                        jsonShow += "\t\t\"Resultado\":\"" + (item.isResult() ? "Cadena Valida\"" : "Cadena Invalida\"") + "\n";
+                        if ((validations.size() - count) == 0) {
+                            jsonShow += "\t}\n";
+                        } else {
+                            jsonShow += "\t},\n";
+                        }
+                    }
+                    count++;
+                }
+
+                jsonShow += "]";
+
+                File dir = new File(new File(".").getCanonicalPath() + "/Outs_20180683");
+                dir.mkdir();
+                String[] name;
+                if (this.nameFile.contains(".")) {
+                    name = this.nameFile.split(".olc");
+                } else {
+                    name = new String[]{this.nameFile};
+                }
+                File file = new File(dir.getAbsolutePath() + "/" + name[0] + ".json");
+                file.createNewFile();
+
+                FileWriter write = new FileWriter(file);
+                write.write(jsonShow);
+                write.close();
+
+                this.txtConsole.setText(consoleShow);
+
+                if (!this.flagConsole) {
+                    this.setSize(this.getSize().width, this.getSize().height + this.jScrollPane2.getSize().height);
+                    this.getContentPane().add(this.pnInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 972, this.getSize().width, 26));
+                    this.setLocation(this.getLocation().x, this.getLocation().y - 150);
+                    this.jScrollPane2.setVisible(true);
+                    this.flagConsole = true;
+                }
             }
-            
+
             JOptionPane.showMessageDialog(null, "Analysis Completed");
 
             File dir = new File(new File(".").getCanonicalPath() + "/Errores_20180683");
             dir.mkdir();
             File file = new File(dir.getAbsolutePath() + "/Errors.html");
             file.createNewFile();
-            
-            
+
             FileWriter write = new FileWriter(file);
             write.write(errorReport);
             write.close();
@@ -601,32 +643,31 @@ public class Home extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Que pex :'v" + e);
         }
-        
-        
-        
+
+
     }//GEN-LAST:event_lblExecuteMouseClicked
 
     private void cbImagesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbImagesItemStateChanged
-        if(evt.getStateChange() == ItemEvent.SELECTED){
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
             //JOptionPane.showMessageDialog(null, evt.getItem().toString());
-            ImageIcon icon = new ImageIcon(evt.getItem().toString() +".png");
+            ImageIcon icon = new ImageIcon(evt.getItem().toString() + ".png");
             Icon icono = new ImageIcon(icon.getImage().getScaledInstance(this.lblImage.getWidth(), this.lblImage.getHeight(), Image.SCALE_AREA_AVERAGING));
             this.lblImage.setIcon(icono);
         }
     }//GEN-LAST:event_cbImagesItemStateChanged
 
     private void lblPdfMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPdfMouseClicked
-        try{
+        try {
             Runtime.getRuntime().exec("evince " + new File(".").getCanonicalPath() + "/" + this.cbImages.getSelectedItem().toString() + ".pdf");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
     }//GEN-LAST:event_lblPdfMouseClicked
 
     private void lblBugsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBugsMouseClicked
-        try{
+        try {
             Runtime.getRuntime().exec("google-chrome " + "Errores_201806838/Errors.html");
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
     }//GEN-LAST:event_lblBugsMouseClicked

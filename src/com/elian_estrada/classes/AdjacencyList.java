@@ -55,45 +55,72 @@ public class AdjacencyList {
         return null;
     }
 
-    public String print(String name){
+    public String print(String name) {
         StringBuilder dot = new StringBuilder();
         String path = "";
         dot.append("digraph G {\nbgcolor = \"#1a1a1a\"\nrankdir=LR\nedge[fontcolor = white, color=white]\n"
                 + "node [shape = \"circle\" style=filled fillcolor = \"#313638\" fontcolor = white color = \"#007acc\"];\n");
-        if(!this.listVertex.isEmpty()){
+        if (!this.listVertex.isEmpty()) {
             Vertex aux;
             int count = 0;
-            
-            while(count < this.listVertex.size()){
+
+            while (count < this.listVertex.size()) {
                 aux = listVertex.get(count);
                 aux.print(dot);
                 count++;
             }
         }
-        
-        dot.append("}");    
+
+        dot.append("}");
         System.out.println(dot);
-        
-        try{
+
+        try {
             File dir = new File(new File(".").getCanonicalPath() + "/AFD_201806838");
             dir.mkdir();
             File file = new File(dir.getAbsolutePath() + "/" + name + ".dot");
             file.createNewFile();
-            
+
             FileWriter write = new FileWriter(file);
             write.write(dot.toString());
             write.close();
-            
+
             path = "AFD_201806838/" + name;
-            
-        }catch(Exception e){
+
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Don't create File.");
         }
-        
+
         return path;
-        
+
     }
-    
+
+    public boolean validation(String input) {
+
+        input += "¿";
+        String c;
+        boolean acceptable = false;
+        Vertex aux = new Vertex();
+        aux = this.listVertex.get(0);
+
+        for (int i = 0; i < input.length(); i++) {
+            c = "" + input.charAt(i);
+
+            if (!c.equals("¿")) {
+                if (aux != null) {
+                    for (Vertex item : aux.getNeighbors()) {
+                        if (item.getValues().matcher(c).find()) {
+                            acceptable = item.isAcceptance();
+                            aux = this.searchVertex(item.getName());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return acceptable;
+    }
+
     public ArrayList<Vertex> getListVertex() {
         return listVertex;
     }

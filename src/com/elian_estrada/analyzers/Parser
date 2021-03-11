@@ -27,6 +27,7 @@ parser code
 
     int countErrors = 0;
     public boolean errors = false;
+    public ArrayList<Validation> validations = new ArrayList<Validation>();
     public ArrayList<SintacticError> sintacticError = new ArrayList<SintacticError>();
     public Hashtable<String, SymbolTable> symbolTableGlobal = new Hashtable<String, SymbolTable>();
 
@@ -87,7 +88,7 @@ terminal String SIMBOLS;
 
 non terminal Init;
 non terminal Statement;
-non terminal Validation;
+non terminal Validation Validations;
 non terminal StatementInstrucctions;
 non terminal String Set;
 non terminal String SetType;
@@ -96,14 +97,14 @@ non terminal String Signs;
 non terminal String ListSet;
 non terminal Tree RegularPhrase;
 non terminal NodeTree Expression;
-non terminal ValidationInstrucctions;
+non terminal InputString ValidationInstrucctions;
 
 precedence left CONCAT, DISYN;
 precedence left KLEAN, POS, BOOL;
 
 start with Init;
 
-Init ::= LLAVIZQ Statement PORCENT PORCENT Validation LLAVDER                   {:if(errors){System.out.println(sintacticError);}:}
+Init ::= LLAVIZQ Statement PORCENT PORCENT Validations:a LLAVDER                   {:if(errors){}:}
         |error
 ;                  
 
@@ -171,16 +172,16 @@ Expression ::=
 ;
 
 
-Validation ::= 
-     ValidationInstrucctions Validation
-    |ValidationInstrucctions
+Validations ::= 
+     ValidationInstrucctions:a Validations                                      {:if(!errors){validations.add(a.validation());}:}
+    |ValidationInstrucctions:a                                                  {:if(!errors){validations.add(a.validation());}:}
     /*|error LLAVDER*/
-    |error Validation
+    |error Validations
     |error LLAVDER
 ;
 
 ValidationInstrucctions ::= 
-     IDENTIFICADOR:a DOSPUN CADENA_TEXTO:b PTCOMA                               {:if(!errors){}:}
+     IDENTIFICADOR:a DOSPUN CADENA_TEXTO:b PTCOMA                               {:if(!errors){RESULT = new InputString(a, b, symbolTable);}:}
 ;
 
 /*
