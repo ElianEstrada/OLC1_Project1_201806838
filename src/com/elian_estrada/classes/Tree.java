@@ -5,8 +5,11 @@
  */
 package com.elian_estrada.classes;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,6 +27,15 @@ public class Tree {
     private Hashtable<ArrayList<NodeTree>, String> listStates;
     private Hashtable<Integer, ArrayList<NodeTree>> leaves;
     private Hashtable<String, SymbolTable> symbolTable;
+    
+    
+    //For SymbolTable
+    private String pathTree;
+    private String pathAFD;
+    private String pathAFND;
+    private String pathTransitions;
+    private String pathFollows;
+    private AdjacencyList afd;
 
     public Tree() {
         this.setRoot(null);
@@ -36,6 +48,14 @@ public class Tree {
         this.valuateState = new Stack<ArrayList<NodeTree>>();
         this.listStates = new Hashtable<ArrayList<NodeTree>, String>();
         count = 0;
+    }
+    
+    public void reports(Hashtable<Integer, ArrayList<NodeTree>> leaves, Hashtable<String, SymbolTable> symbolTable){
+        this.chart();
+        this.followTable(leaves);
+        this.transitionsTable(leaves, symbolTable);
+        
+        symbolTable.put(this.name, new SymbolTable(this.name, new Expression(this.pathTree, this.pathTransitions, this.pathFollows, this.pathAFD, this.pathAFND, this.afd)));
     }
 
     public String followTable(Hashtable<Integer, ArrayList<NodeTree>> leaves) {
@@ -55,6 +75,23 @@ public class Tree {
                 + this.getName() + " [label = \"{ Symbols|" + symbols + "} | { Leaf|" + leaf + "} | {Follow|" + follows + "}\"]\n}";
 
         System.out.println(follow);
+        
+        try{
+            File dir = new File(new File(".").getCanonicalPath() + "/Follows_201806838");
+            dir.mkdir();
+            File file = new File(dir.getAbsolutePath() + "/" + this.name + ".dot");
+            file.createNewFile();
+            
+            FileWriter write = new FileWriter(file);
+            write.write(follow);
+            write.close();
+            
+            this.pathFollows = "Follows_201806838/" + this.name;
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Don't create File.");
+        }
+        
         return follow;
     }
 
@@ -138,12 +175,59 @@ public class Tree {
         for(State afd: this.states){
             adjacencyList.addVertex(afd);
         }
-        adjacencyList.print();
-        System.out.println(this.states);
+        this.pathAFD = adjacencyList.print(this.getName());
+        this.afd = adjacencyList;
         
+        String transitions = "digraph G{\nbgcolor = \"#1a1a1a\"\nrankdir=TB\nedge[fontcolor = white, color=white]\n"
+                + "node [shape = \"plaintext\" style=filled fillcolor = \"#313638\" fontcolor = white color = \"#007acc\"];\n";
+        transitions += "transition [label = <\n<table border = \"0\" cellborder = \"1\" cellspacing = \"0\">\n<tr>\n<td rowspan = \"2\">States</td>\n"
+                + "<td colspan = \" " + this.terminals.size() + "\">Terminals</td>\n</tr>\n<tr>\n";
+        for(String terminal: this.terminals){
+            transitions += "<td>" + terminal + "</td>\n"; 
+        }
+        transitions += "</tr>\n";
+        
+        for(Vertex vertex: adjacencyList.getListVertex()){
+            transitions += "<tr>\n<td>" + vertex.getName() + "</td>\n";
+            for(String terminal: this.terminals){
+                transitions += "<td>" + existTerminal(vertex.getNeighbors(), terminal) + "</td>\n";
+            }
+            transitions += "</tr>\n";
+        }
+                
+        transitions += "</table>\n>];\n}";
+        
+        
+        try{
+            File dir = new File(new File(".").getCanonicalPath() + "/Transitions_201806838");
+            dir.mkdir();
+            File file = new File(dir.getAbsolutePath() + "/" + this.name + ".dot");
+            file.createNewFile();
+            
+            FileWriter write = new FileWriter(file);
+            write.write(transitions);
+            write.close();
+            
+            this.pathTransitions = "Transitions_201806838/" + this.name;
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Don't create File.");
+        }
+        
+        System.out.println(transitions);
         return "";
     }
 
+    public String existTerminal(ArrayList<Vertex> neighbors, String terminal){
+        for(Vertex vertex: neighbors){
+            if(terminal.equals(vertex.getEdge())){
+                return vertex.getName();
+            }
+        }
+        
+        return "---";
+    }
+    
     public String searchNode(int id) {
         return search(root, id);
     }
@@ -178,6 +262,22 @@ public class Tree {
         graph += "root->" + preOrder(this.getRoot().getLeft());
         graph += "root->" + preOrder(this.getRoot().getRight()) + "\n}";
 
+        try{
+            File dir = new File(new File(".").getCanonicalPath() + "/Tree_201806838");
+            dir.mkdir();
+            File file = new File(dir.getAbsolutePath() + "/" + this.name + ".dot");
+            file.createNewFile();
+            
+            FileWriter write = new FileWriter(file);
+            write.write(graph);
+            write.close();
+            
+            this.pathTree = "Tree_201806838/" + this.name;
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Don't create File.");
+        }
+        
         return graph;
     }
 

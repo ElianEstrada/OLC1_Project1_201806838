@@ -63,12 +63,22 @@ public class Vertex {
             aux = this.neighbors.get(count);
             if (aux.isAcceptance()) {
                 dot.append("node [shape = \"doublecircle\"];\n");
-                dot.append("edge[label = \"" + aux.getEdge() + "\" fontseize = 5]\n" + this.getName());
-                dot.append("->" + aux.getName() + ";\n");
-            } else {
-                dot.append("edge[label = \"" + aux.getEdge() + "\" fontseize = 5]\n" + this.getName());
-                dot.append("->" + aux.getName() + ";\n");
             }
+            switch(aux.getEdge()){
+                case "\n":
+                    dot.append("edge[label = \"\\").append(aux.getEdge()).append("\" fontseize = 5]\n").append(this.getName());
+                    break;
+                case "\"":
+                    dot.append("edge[label = \"\\" + aux.getEdge() + "\" fontseize = 5]\n" + this.getName());
+                    break;
+                case " ":
+                    dot.append("edge[label = \"\\\"" + aux.getEdge() + "\\\"\" fontseize = 5]\n" + this.getName());
+                    break;
+                default: 
+                    dot.append("edge[label = \"" + aux.getEdge() + "\" fontseize = 5]\n" + this.getName());
+                    break;
+            }
+            dot.append("->" + aux.getName() + ";\n");
 
             count++;
         }

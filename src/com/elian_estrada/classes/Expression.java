@@ -16,15 +16,16 @@ public class Expression {
     private String pathFollow;
     private String pathAFD;
     private String pathAFN;
+    private AdjacencyList afd;
     
-    public Expression(String pathTree, String pathTransitions, String pathFollow, String pathAFD, String pathAFN){
+    public Expression(String pathTree, String pathTransitions, String pathFollow, String pathAFD, String pathAFN, AdjacencyList afd){
         
         this.setPathTree(pathTree);
         this.setPathTransitions(pathTransitions);
         this.setPathFollow(pathFollow);
         this.setPathAFD(pathAFD);
         this.setPathAFN(pathAFN);
-        
+        this.setAfd(afd);
     }
 
     public String getPathTree() {
@@ -66,6 +67,15 @@ public class Expression {
     public void setPathAFN(String pathAFN) {
         this.pathAFN = pathAFN;
     }
+
+    public AdjacencyList getAfd() {
+        return afd;
+    }
+
+    public void setAfd(AdjacencyList afd) {
+        this.afd = afd;
+    }
+    
     
     
 }

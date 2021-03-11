@@ -7,9 +7,13 @@ package com.elian_estrada.gui;
 
 import com.elian_estrada.controllers.Menu;
 import com.elian_estrada.analyzers.*;
+import com.elian_estrada.classes.Expression;
+import com.elian_estrada.classes.SymbolTable;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.Point;
+import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,11 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 
 /**
  *
@@ -95,6 +107,8 @@ public class Home extends javax.swing.JFrame {
         lblSaveFile = new javax.swing.JLabel();
         lblSaveFileAs = new javax.swing.JLabel();
         lblExecute = new javax.swing.JLabel();
+        lblPdf = new javax.swing.JLabel();
+        lblBugs = new javax.swing.JLabel();
         pnTextArea = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtSource = new javax.swing.JTextArea();
@@ -102,6 +116,8 @@ public class Home extends javax.swing.JFrame {
         pnImages = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         trImages = new javax.swing.JTree();
+        cbImages = new javax.swing.JComboBox<>();
+        lblImage = new javax.swing.JLabel();
         pnInfo = new javax.swing.JPanel();
         lblOutput = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -214,6 +230,24 @@ public class Home extends javax.swing.JFrame {
         });
         pnMenu.add(lblExecute, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, -1, -1));
 
+        lblPdf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/elian_estrada/images/icons8-pdf-40.png"))); // NOI18N
+        lblPdf.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblPdf.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblPdfMouseClicked(evt);
+            }
+        });
+        pnMenu.add(lblPdf, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, -1, -1));
+
+        lblBugs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/elian_estrada/images/icons8-insecto-40.png"))); // NOI18N
+        lblBugs.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblBugs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblBugsMouseClicked(evt);
+            }
+        });
+        pnMenu.add(lblBugs, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, -1, -1));
+
         jPanel1.add(pnMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 60, 690));
 
         pnTextArea.setBackground(new java.awt.Color(32, 32, 32));
@@ -286,6 +320,16 @@ public class Home extends javax.swing.JFrame {
         pnImages.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 200, 640));
 
         jPanel1.add(pnImages, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 10, 220, 680));
+
+        cbImages.setBackground(new java.awt.Color(32, 32, 32));
+        cbImages.setForeground(new java.awt.Color(255, 255, 255));
+        cbImages.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbImagesItemStateChanged(evt);
+            }
+        });
+        jPanel1.add(cbImages, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 50, 410, 30));
+        jPanel1.add(lblImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(765, 90, 400, 510));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1190, -1));
 
@@ -460,7 +504,7 @@ public class Home extends javax.swing.JFrame {
             this.menu.setFlagEdit(false);
         }
     }//GEN-LAST:event_lblOpenFileMouseClicked
-
+    
     private void lblExecuteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblExecuteMouseClicked
         try {
 
@@ -474,6 +518,7 @@ public class Home extends javax.swing.JFrame {
 
             parser.parse();
 
+            
             String errorReport = "<!DOCTYPE html>\n<html>\n<head>\n<title>\n Bug Report \n</title>\n"
                     + "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css\">\n"
                     + "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js\"></script>\n"
@@ -488,11 +533,57 @@ public class Home extends javax.swing.JFrame {
 
             int erLexical = scanner.lexicalError.size();
             int erSintactic = parser.sintacticError.size();
+            
             if (erLexical != 0 || erSintactic != 0) {
                 JOptionPane.showMessageDialog(null, "Lexical Errors: [" + erLexical + "];\n"
                         + "Sintactic Errors: [" + erSintactic + "]");
+            }else if(erSintactic == 0){
+                Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
+                
+                symbolTable = parser.symbolTableGlobal;
+                
+                Enumeration enumeration = symbolTable.elements();
+                SymbolTable symbol;
+                Expression expression;
+                DefaultMutableTreeNode root = new DefaultMutableTreeNode("Images");
+                ArrayList<String> pathImages = new ArrayList<String>();
+                //TreeModel tree = this.trImages.getModel();
+                while(enumeration.hasMoreElements()){
+                    symbol = (SymbolTable) enumeration.nextElement();
+                    expression = symbol.getExpresion();
+                    if(expression != null){
+                        try{
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathTree() + ".dot -o " + expression.getPathTree() + ".png " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathTree() + ".dot -o " + expression.getPathTree() + ".pdf " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathFollow()+ ".dot -o " + expression.getPathFollow() + ".png " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathFollow() + ".dot -o " + expression.getPathFollow() + ".pdf " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathTransitions() + ".dot -o " + expression.getPathTransitions() + ".png " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathTransitions() + ".dot -o " + expression.getPathTransitions() + ".pdf " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathAFD() + ".dot -o " + expression.getPathAFD() + ".png " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathAFD() + ".dot -o " + expression.getPathAFD() + ".pdf " ).waitFor();
+                            /*Runtime.getRuntime().exec("dot" + " -Tpng " + expression.getPathAFN() + ".dot -o AFND_201806838/" + expression.getPathAFN() + ".png " ).waitFor();
+                            Runtime.getRuntime().exec("dot" + " -Tpdf " + expression.getPathAFN() + ".dot -o AFND_201806838/" + expression.getPathAFN() + ".pdf " ).waitFor();*/
+                            
+                            
+                            
+                            
+                        }catch(Exception e){
+                            JOptionPane.showMessageDialog(null, "Error, Generated Report Failed");
+                        }
+                        
+                        pathImages.add(expression.getPathAFD());
+                        pathImages.add(expression.getPathFollow());
+                        pathImages.add(expression.getPathTransitions());
+                        pathImages.add(expression.getPathTree());
+                        
+                    }
+                }
+                
+                for(String items: pathImages){
+                    this.cbImages.addItem(items);
+                }
             }
-
+            
             JOptionPane.showMessageDialog(null, "Analysis Completed");
 
             File dir = new File(new File(".").getCanonicalPath() + "/Errores_20180683");
@@ -510,19 +601,51 @@ public class Home extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Que pex :'v" + e);
         }
+        
+        
+        
     }//GEN-LAST:event_lblExecuteMouseClicked
+
+    private void cbImagesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbImagesItemStateChanged
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            //JOptionPane.showMessageDialog(null, evt.getItem().toString());
+            ImageIcon icon = new ImageIcon(evt.getItem().toString() +".png");
+            Icon icono = new ImageIcon(icon.getImage().getScaledInstance(this.lblImage.getWidth(), this.lblImage.getHeight(), Image.SCALE_AREA_AVERAGING));
+            this.lblImage.setIcon(icono);
+        }
+    }//GEN-LAST:event_cbImagesItemStateChanged
+
+    private void lblPdfMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPdfMouseClicked
+        try{
+            Runtime.getRuntime().exec("evince " + new File(".").getCanonicalPath() + "/" + this.cbImages.getSelectedItem().toString() + ".pdf");
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_lblPdfMouseClicked
+
+    private void lblBugsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBugsMouseClicked
+        try{
+            Runtime.getRuntime().exec("google-chrome " + "Errores_201806838/Errors.html");
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_lblBugsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cbImages;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lblBugs;
     private javax.swing.JLabel lblExecute;
     private javax.swing.JLabel lblExit;
+    private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblNewFile;
     private javax.swing.JLabel lblOpenFile;
     private javax.swing.JLabel lblOutput;
+    private javax.swing.JLabel lblPdf;
     private javax.swing.JLabel lblSaveFile;
     private javax.swing.JLabel lblSaveFileAs;
     private javax.swing.JLabel lblTitle;

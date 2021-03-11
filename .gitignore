@@ -9,5 +9,9 @@ nbdist/
 jflex-1.8.2/
 cup/
 *.tar.gz
-/Errores_20180683
+/Errores_201806838
+/AFD_201806838
+/Transitions_201806838
+/Follows_201806838
+/Tree_201806838
 *.html

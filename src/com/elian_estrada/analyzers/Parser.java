@@ -190,6 +190,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     int countErrors = 0;
     public boolean errors = false;
     public ArrayList<SintacticError> sintacticError = new ArrayList<SintacticError>();
+    public Hashtable<String, SymbolTable> symbolTableGlobal = new Hashtable<String, SymbolTable>();
 
     /*Metodo para errores sintacticos*/
     public void syntax_error(Symbol s){
@@ -239,7 +240,7 @@ class CUP$Parser$actions {
 
 
 
-    public Hashtable<String, SymbolTable> symbolTable = new Hashtable<String, SymbolTable>();
+    public Hashtable<String, SymbolTable> symbolTable = symbolTableGlobal;
     public Hashtable<Integer, ArrayList<NodeTree>> leaves = new Hashtable<Integer, ArrayList<NodeTree>>();
     public ArrayList<String> terminalSymbol = new ArrayList<String>();
     //public Tree tree;
@@ -346,8 +347,7 @@ class CUP$Parser$actions {
 		int aright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Tree a = (Tree)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
-                                                                                    if(!errors) {count = 0; a.followTable(leaves); a.transitionsTable(leaves, symbolTable); 
-                                                                                        System.out.println(a.chart()); leaves.clear(); terminalSymbol.clear(); }
+                                                                                    if(!errors) {count = 0; a.reports(leaves, symbolTable); leaves.clear(); terminalSymbol.clear(); }
                                                                                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("StatementInstrucctions",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

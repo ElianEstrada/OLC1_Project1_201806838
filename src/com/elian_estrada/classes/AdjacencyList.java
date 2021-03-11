@@ -5,8 +5,11 @@
  */
 package com.elian_estrada.classes;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -52,8 +55,9 @@ public class AdjacencyList {
         return null;
     }
 
-    public void print(){
+    public String print(String name){
         StringBuilder dot = new StringBuilder();
+        String path = "";
         dot.append("digraph G {\nbgcolor = \"#1a1a1a\"\nrankdir=LR\nedge[fontcolor = white, color=white]\n"
                 + "node [shape = \"circle\" style=filled fillcolor = \"#313638\" fontcolor = white color = \"#007acc\"];\n");
         if(!this.listVertex.isEmpty()){
@@ -65,11 +69,29 @@ public class AdjacencyList {
                 aux.print(dot);
                 count++;
             }
-            
-            dot.append("}");
-            
-            System.out.println(dot);
         }
+        
+        dot.append("}");    
+        System.out.println(dot);
+        
+        try{
+            File dir = new File(new File(".").getCanonicalPath() + "/AFD_201806838");
+            dir.mkdir();
+            File file = new File(dir.getAbsolutePath() + "/" + name + ".dot");
+            file.createNewFile();
+            
+            FileWriter write = new FileWriter(file);
+            write.write(dot.toString());
+            write.close();
+            
+            path = "AFD_201806838/" + name;
+            
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Don't create File.");
+        }
+        
+        return path;
+        
     }
     
     public ArrayList<Vertex> getListVertex() {

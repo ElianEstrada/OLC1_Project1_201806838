@@ -19,6 +19,7 @@ public class SymbolTable {
     private String name;
     private Pattern values;
     private String[] charactters;
+    private Expression expresion;
     
     public SymbolTable(String name, String values){
         String options = "";
@@ -37,7 +38,8 @@ public class SymbolTable {
     }
 
     public SymbolTable(String name, Expression expression){
-        
+        this.setName(name);
+        this.expresion = expression;
     }
     
     public String getName() {
@@ -68,5 +70,10 @@ public class SymbolTable {
     public String toString() {
         return "SymbolTable{" + "name=" + name + ", values=" + values + ", charactters=" + charactters + '}';
     }
+
+    public Expression getExpresion() {
+        return expresion;
+    }
+    
     
 }
